@@ -44,7 +44,7 @@
                         directionality: "{{ core()->getCurrentLocale()->direction }}",
 
                         setup: editor => {
-                            editor.on('keyup', () => this.field.onInput(editor.getContent()));
+                            editor.on('keyup change input undo redo SetContent', () => this.field.onInput(editor.getContent()));
                         },
                     });
                 },

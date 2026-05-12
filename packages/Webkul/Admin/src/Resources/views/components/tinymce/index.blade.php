@@ -335,7 +335,7 @@
                                 }
                             });
 
-                            editor.on('keyup', () => {
+                            editor.on('keyup change input undo redo SetContent', () => {
                                 this.field.onInput(editor.getContent());
                             });
                         },
