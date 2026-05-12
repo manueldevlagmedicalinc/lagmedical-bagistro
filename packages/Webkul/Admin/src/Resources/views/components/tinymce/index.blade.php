@@ -308,6 +308,8 @@
                         plugins: 'image media wordcount save fullscreen code table lists link',
                         toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor image alignleft aligncenter alignright alignjustify | link hr |numlist bullist outdent indent  | removeformat | code | table | aibutton',
                         image_advtab: true,
+                        extended_valid_elements: 'table[*],tbody[*],thead[*],tr[*],td[*],th[*]',
+                        valid_children: '+body[style]',
                         directionality : "{{ core()->getCurrentLocale()->direction }}",
 
                         setup: editor => {
