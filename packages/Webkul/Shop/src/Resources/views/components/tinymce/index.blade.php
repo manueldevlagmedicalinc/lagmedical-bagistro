@@ -39,10 +39,12 @@
                         document_base_url: '{{ asset('/') }}',
                         plugins: 'wordcount save fullscreen code table lists link',
                         toolbar1: 'formatselect | bold italic strikethrough forecolor backcolor alignleft aligncenter alignright alignjustify | link hr | numlist bullist outdent indent | removeformat | code | table',
+                        extended_valid_elements: 'table[*],tbody[*],thead[*],tr[*],td[*],th[*]',
+                        valid_children: '+body[style]',
                         directionality: "{{ core()->getCurrentLocale()->direction }}",
 
                         setup: editor => {
-                            editor.on('keyup', () => this.field.onInput(editor.getContent()));
+                            editor.on('keyup change input undo redo SetContent', () => this.field.onInput(editor.getContent()));
                         },
                     });
                 },
