@@ -67,7 +67,7 @@
                     <!-- Product Sale Badge -->
                     <p
                         class="absolute top-1.5 inline-block rounded-[44px] bg-red-600 px-2.5 text-sm text-white max-sm:rounded-l-none max-sm:rounded-r-xl max-sm:px-2 max-sm:py-0.5 max-sm:text-xs ltr:left-1.5 max-sm:ltr:left-0 rtl:right-5 max-sm:rtl:right-0"
-                        v-if="product.on_sale && ! product.is_quote_mode"
+                        v-if="product.on_sale"
                     >
                         @lang('shop::app.components.products.card.sale')
                     </p>
@@ -133,7 +133,6 @@
 
                 <div
                     class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-lg font-semibold max-sm:text-sm max-sm:leading-6"
-                    v-if="! product.is_quote_mode"
                     v-html="product.price_html"
                 >
                 </div>
@@ -278,7 +277,6 @@
 
                 <div
                     class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-lg font-semibold"
-                    v-if="! product.is_quote_mode"
                     v-html="product.price_html"
                 >
                 </div>
