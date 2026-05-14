@@ -24,6 +24,13 @@ if (! function_exists('lagmedical_quote_mode_value')) {
     }
 }
 
+if (! function_exists('lagmedical_whatsapp_value')) {
+    function lagmedical_whatsapp_value(string $key, mixed $default = null): mixed
+    {
+        return config('lagmedical.whatsapp.'.$key, $default);
+    }
+}
+
 if (! function_exists('lagmedical_localized')) {
     function lagmedical_localized(mixed $value, string $default): string
     {
@@ -114,5 +121,59 @@ if (! function_exists('lagmedical_checkout_button_label')) {
             lagmedical_quote_mode_value('checkout_button_label', []),
             'Submit Order Request'
         );
+    }
+}
+
+if (! function_exists('lagmedical_whatsapp_enabled')) {
+    function lagmedical_whatsapp_enabled(): bool
+    {
+        return lagmedical_is_quote_mode() && (bool) lagmedical_whatsapp_value('enabled', false);
+    }
+}
+
+if (! function_exists('lagmedical_whatsapp_phone')) {
+    function lagmedical_whatsapp_phone(): string
+    {
+        return preg_replace('/\D+/', '', (string) lagmedical_whatsapp_value('phone', ''));
+    }
+}
+
+if (! function_exists('lagmedical_whatsapp_button_label')) {
+    function lagmedical_whatsapp_button_label(): string
+    {
+        return lagmedical_localized(
+            lagmedical_whatsapp_value('button_label', []),
+            'Ask on WhatsApp'
+        );
+    }
+}
+
+if (! function_exists('lagmedical_whatsapp_message')) {
+    function lagmedical_whatsapp_message(string $productName, string $productUrl): string
+    {
+        $template = lagmedical_localized(
+            lagmedical_whatsapp_value('message_template', []),
+            'Hello Lag Medical, I need this product: :product_name. I saw it at this link: :product_url'
+        );
+
+        return strtr($template, [
+            ':product_name' => $productName,
+            ':product_url' => $productUrl,
+        ]);
+    }
+}
+
+if (! function_exists('lagmedical_whatsapp_url')) {
+    function lagmedical_whatsapp_url(string $productName, string $productUrl): string
+    {
+        $phone = lagmedical_whatsapp_phone();
+
+        if ($phone === '') {
+            return '';
+        }
+
+        $message = lagmedical_whatsapp_message($productName, $productUrl);
+
+        return 'https://wa.me/'.$phone.'?text='.rawurlencode($message);
     }
 }

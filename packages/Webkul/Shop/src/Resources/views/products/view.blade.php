@@ -429,6 +429,26 @@
                                     @endif
                                 </div>
 
+                                @if (lagmedical_whatsapp_enabled())
+                                    @php
+                                        $lagmedicalWhatsappUrl = lagmedical_whatsapp_url(
+                                            $product->name,
+                                            route('shop.product_or_category.index', $product->url_key)
+                                        );
+                                    @endphp
+
+                                    @if ($lagmedicalWhatsappUrl)
+                                        <a
+                                            href="{{ $lagmedicalWhatsappUrl }}"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            class="secondary-button mt-4 inline-flex w-full max-w-[470px] items-center justify-center max-md:py-3 max-sm:rounded-lg max-sm:py-1.5"
+                                        >
+                                            {{ lagmedical_whatsapp_button_label() }}
+                                        </a>
+                                    @endif
+                                @endif
+
                                 <!-- Buy Now Button -->
                                 @if (core()->getConfigData('sales.checkout.shopping_cart.cart_page') && ! lagmedical_is_quote_mode())
                                     {!! view_render_event('bagisto.shop.products.view.buy_now.before', ['product' => $product]) !!}

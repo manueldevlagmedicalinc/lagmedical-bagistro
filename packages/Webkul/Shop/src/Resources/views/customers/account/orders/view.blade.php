@@ -106,6 +106,94 @@
         {!! view_render_event('bagisto.shop.customers.account.orders.view.before', ['order' => $order]) !!}
 
         <!-- Order view tabs -->
+        @if (lagmedical_is_quote_mode())
+            <div class="mt-8 grid gap-6 max-md:mt-5 max-md:gap-4">
+                <p class="text-sm text-zinc-500">
+                    {{ lagmedical_quote_message() }}
+                </p>
+
+                <div class="relative overflow-x-auto rounded-xl border">
+                    <table class="w-full text-left">
+                        <thead class="border-b border-zinc-200 bg-zinc-100 text-sm text-black">
+                            <tr class="[&>*]:font-medium [&>*]:px-6 [&>*]:py-4">
+                                <th scope="col">
+                                    @lang('shop::app.customers.account.orders.view.information.sku')
+                                </th>
+
+                                <th scope="col">
+                                    @lang('shop::app.customers.account.orders.view.information.product-name')
+                                </th>
+
+                                <th scope="col">
+                                    @lang('shop::app.customers.account.orders.view.information.item-status')
+                                </th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach ($order->items as $item)
+                                <tr class="border-b bg-white align-top font-medium [&>*]:px-6 [&>*]:py-4">
+                                    <td>
+                                        {{ $item->getTypeInstance()->getOrderedItem($item)->sku }}
+                                    </td>
+
+                                    <td>
+                                        {{ $item->name }}
+
+                                        @if (isset($item->additional['attributes']))
+                                            <div>
+                                                @foreach ($item->additional['attributes'] as $attribute)
+                                                    @if (
+                                                        ! isset($attribute['attribute_type'])
+                                                        || $attribute['attribute_type'] !== 'file'
+                                                    )
+                                                        <b>{{ $attribute['attribute_name'] }} : </b>{{ $attribute['option_label'] }}<br>
+                                                    @else
+                                                        {{ $attribute['attribute_name'] }} :
+
+                                                        <a
+                                                            href="{{ Storage::url($attribute['option_label']) }}"
+                                                            class="text-blue-600 hover:underline"
+                                                            download="{{ File::basename($attribute['option_label']) }}"
+                                                        >
+                                                            {{ File::basename($attribute['option_label']) }}
+                                                        </a>
+
+                                                        <br>
+                                                    @endif
+                                                @endforeach
+                                            </div>
+                                        @endif
+                                    </td>
+
+                                    <td>
+                                        @if($item->qty_ordered)
+                                            @lang('shop::app.customers.account.orders.view.information.ordered-item', ['qty_ordered' => $item->qty_ordered])
+                                        @endif
+
+                                        @if($item->qty_invoiced)
+                                            @lang('shop::app.customers.account.orders.view.information.invoiced-item', ['qty_invoiced' => $item->qty_invoiced])
+                                        @endif
+
+                                        @if($item->qty_shipped)
+                                            @lang('shop::app.customers.account.orders.view.information.item-shipped', ['qty_shipped' => $item->qty_shipped])
+                                        @endif
+
+                                        @if($item->qty_refunded)
+                                            @lang('shop::app.customers.account.orders.view.information.item-refunded', ['qty_refunded' => $item->qty_refunded])
+                                        @endif
+
+                                        @if($item->qty_canceled)
+                                            @lang('shop::app.customers.account.orders.view.information.item-canceled', ['qty_canceled' => $item->qty_canceled])
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @else
         <div class="mt-8 max-md:mt-5 max-md:grid max-md:gap-4">
             <x-shop::tabs>
                 <x-shop::tabs.item
@@ -2332,6 +2420,7 @@
                 {!! view_render_event('bagisto.shop.customers.account.orders.view.payment_method.after', ['order' => $order]) !!}
             </div>
         </div>
+        @endif
 
         {!! view_render_event('bagisto.shop.customers.account.orders.view.after', ['order' => $order]) !!}
 
