@@ -294,11 +294,11 @@
 
                 {!! view_render_event('bagisto.shop.components.products.card.average_ratings.before') !!}
 
-                <p class="text-sm text-zinc-500">
-                    <template  v-if="! product.ratings.total">
-                        <p class="text-sm text-zinc-500">
+                <div class="text-sm text-zinc-500">
+                    <template v-if="! product.ratings.total">
+                        <span class="text-sm text-zinc-500">
                             @lang('shop::app.components.products.card.review-description')
-                        </p>
+                        </span>
                     </template>
 
                     <template v-else>
@@ -316,7 +316,7 @@
                             />
                         @endif
                     </template>
-                </p>
+                </div>
 
                 {!! view_render_event('bagisto.shop.components.products.card.average_ratings.after') !!}
 
