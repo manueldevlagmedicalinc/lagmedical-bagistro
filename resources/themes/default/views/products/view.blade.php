@@ -55,12 +55,6 @@
 
     {!! view_render_event('bagisto.shop.products.view.before', ['product' => $product]) !!}
 
-    <div class="mx-auto mt-4 w-full max-w-[1320px] px-4">
-        <p class="rounded-lg border border-emerald-300 bg-emerald-50 px-4 py-2 text-sm text-emerald-800">
-            Este es el overwrite.
-        </p>
-    </div>
-
     <!-- Breadcrumbs -->
     @if ((core()->getConfigData('general.general.breadcrumbs.shop')))
         <div class="flex justify-center px-7 max-lg:hidden">
