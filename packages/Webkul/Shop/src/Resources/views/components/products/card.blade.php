@@ -64,13 +64,15 @@
                 {!! view_render_event('bagisto.shop.components.products.card.average_ratings.after') !!}
 
                 <div class="action-items bg-black">
-                    <!-- Product Sale Badge -->
-                    <p
-                        class="absolute top-1.5 inline-block rounded-[44px] bg-red-600 px-2.5 text-sm text-white max-sm:rounded-l-none max-sm:rounded-r-xl max-sm:px-2 max-sm:py-0.5 max-sm:text-xs ltr:left-1.5 max-sm:ltr:left-0 rtl:right-5 max-sm:rtl:right-0"
-                        v-if="product.on_sale"
-                    >
-                        @lang('shop::app.components.products.card.sale')
-                    </p>
+                    @if (! lagmedical_hide_prices())
+                        <!-- Product Sale Badge -->
+                        <p
+                            class="absolute top-1.5 inline-block rounded-[44px] bg-red-600 px-2.5 text-sm text-white max-sm:rounded-l-none max-sm:rounded-r-xl max-sm:px-2 max-sm:py-0.5 max-sm:text-xs ltr:left-1.5 max-sm:ltr:left-0 rtl:right-5 max-sm:rtl:right-0"
+                            v-if="product.on_sale"
+                        >
+                            @lang('shop::app.components.products.card.sale')
+                        </p>
+                    @endif
 
                     <!-- Product New Badge -->
                     <p
@@ -131,11 +133,13 @@
                 <!-- Pricing -->
                 {!! view_render_event('bagisto.shop.components.products.card.price.before') !!}
 
-                <div
-                    class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-lg font-semibold max-sm:text-sm max-sm:leading-6"
-                    v-html="product.price_html"
-                >
-                </div>
+                @if (! lagmedical_hide_prices())
+                    <div
+                        class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-lg font-semibold max-sm:text-sm max-sm:leading-6"
+                        v-html="product.price_html"
+                    >
+                    </div>
+                @endif
 
                 {!! view_render_event('bagisto.shop.components.products.card.price.after') !!}
 
@@ -275,11 +279,13 @@
 
                 {!! view_render_event('bagisto.shop.components.products.card.price.before') !!}
 
-                <div
-                    class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-lg font-semibold"
-                    v-html="product.price_html"
-                >
-                </div>
+                @if (! lagmedical_hide_prices())
+                    <div
+                        class="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 text-lg font-semibold"
+                        v-html="product.price_html"
+                    >
+                    </div>
+                @endif
 
                 {!! view_render_event('bagisto.shop.components.products.card.price.after') !!}
 
