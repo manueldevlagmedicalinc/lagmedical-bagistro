@@ -55,17 +55,19 @@ class OrderDataGrid extends DataGrid
             'sortable' => true,
         ]);
 
-        $this->addColumn([
-            'index' => 'grand_total',
-            'label' => trans('shop::app.customers.account.orders.total'),
-            'type' => 'integer',
-            'searchable' => true,
-            'filterable' => true,
-            'sortable' => true,
-            'closure' => function ($row) {
-                return core()->formatPrice($row->grand_total, $row->order_currency_code);
-            },
-        ]);
+        if (! lagmedical_hide_totals()) {
+            $this->addColumn([
+                'index' => 'grand_total',
+                'label' => trans('shop::app.customers.account.orders.total'),
+                'type' => 'integer',
+                'searchable' => true,
+                'filterable' => true,
+                'sortable' => true,
+                'closure' => function ($row) {
+                    return core()->formatPrice($row->grand_total, $row->order_currency_code);
+                },
+            ]);
+        }
 
         $this->addColumn([
             'index' => 'status',

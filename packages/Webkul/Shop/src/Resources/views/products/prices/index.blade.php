@@ -1,4 +1,5 @@
-@if ($prices['final']['price'] < $prices['regular']['price'])
+@if (lagmedical_hide_prices())
+@elseif ($prices['final']['price'] < $prices['regular']['price'])
     <p
         class="final-price font-medium text-zinc-500 line-through max-sm:leading-4"
         aria-label="{{ $prices['regular']['formatted_price'] }}"

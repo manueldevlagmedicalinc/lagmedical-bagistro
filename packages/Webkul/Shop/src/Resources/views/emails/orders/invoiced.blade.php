@@ -1,4 +1,5 @@
 @component('shop::emails.layout')
+    @php($isQuoteMode = lagmedical_is_quote_mode())
     <div style="margin-bottom: 34px;">
         <span style="font-size: 22px;font-weight: 600;color: #121A26">
             @lang('shop::app.emails.orders.invoiced.title')
@@ -76,32 +77,40 @@
                     @lang('shop::app.emails.orders.contact') : {{ $invoice->order->billing_address->phone }}
                 </div>
 
-                <div style="font-size: 16px;font-weight: 600;color: #121A26;">
-                    @lang('shop::app.emails.orders.payment')
-                </div>
-
-                <div style="font-size: 16px;font-weight: 400;color: #384860;">
-                    {{ core()->getConfigData('sales.payment_methods.' . $invoice->order->payment->method . '.title') }}
-                </div>
-
-                @php $additionalDetails = \Webkul\Payment\Payment::getAdditionalDetails($invoice->order->payment->method); @endphp
-
-                @if (! empty($additionalDetails))
-                    <div style="font-size: 16px; color: #384860;">
-                        <div>{{ $additionalDetails['title'] }}</div>
-                        <div>{{ $additionalDetails['value'] }}</div>
+                @if (! $isQuoteMode)
+                    <div style="font-size: 16px;font-weight: 600;color: #121A26;">
+                        @lang('shop::app.emails.orders.payment')
                     </div>
+
+                    <div style="font-size: 16px;font-weight: 400;color: #384860;">
+                        {{ core()->getConfigData('sales.payment_methods.' . $invoice->order->payment->method . '.title') }}
+                    </div>
+
+                    @php $additionalDetails = \Webkul\Payment\Payment::getAdditionalDetails($invoice->order->payment->method); @endphp
+
+                    @if (! empty($additionalDetails))
+                        <div style="font-size: 16px; color: #384860;">
+                            <div>{{ $additionalDetails['title'] }}</div>
+                            <div>{{ $additionalDetails['value'] }}</div>
+                        </div>
+                    @endif
                 @endif
             </div>
         @endif
     </div>
+
+    @if ($isQuoteMode)
+        <p style="font-size: 14px;color: #5E5E5E;line-height: 22px; margin-bottom: 20px;">
+            {{ lagmedical_quote_message() }}
+        </p>
+    @endif
 
     <div style="padding-bottom: 40px;border-bottom: 1px solid #CBD5E1;">
         <table style="overflow-x: auto; border-collapse: collapse;
         border-spacing: 0;width: 100%">
             <thead>
                 <tr style="color: #121A26;border-top: 1px solid #CBD5E1;border-bottom: 1px solid #CBD5E1;">
-                    @foreach (['sku', 'name', 'price', 'qty'] as $item)
+                    @foreach ($isQuoteMode ? ['sku', 'name', 'qty'] : ['sku', 'name', 'price', 'qty'] as $item)
                         <th style="text-align: left;padding: 15px">
                             @lang('shop::app.emails.orders.' .$item)
                         </th>
@@ -145,6 +154,7 @@
                             @endif
                         </td>
 
+                        @if (! $isQuoteMode)
                         <td style="display: flex;flex-direction: column;text-align: left;padding: 15px">
                             @if (core()->getConfigData('sales.taxes.sales.display_prices') == 'including_tax')
                                 {{ core()->formatPrice($item->price_incl_tax, $invoice->order_currency_code) }}
@@ -162,6 +172,7 @@
                                 {{ core()->formatPrice($item->price, $invoice->order_currency_code) }}
                             @endif
                         </td>
+                        @endif
 
                         <td style="text-align: left;padding: 15px">
                             {{ $item->qty }}
@@ -172,6 +183,7 @@
         </table>
     </div>
 
+    @if (! $isQuoteMode)
     <div style="display: grid;justify-content: end;font-size: 16px;color: #384860;line-height: 30px;padding-top: 20px;padding-bottom: 20px;">
 
         @if (core()->getConfigData('sales.taxes.sales.display_subtotal') == 'including_tax')
@@ -292,4 +304,5 @@
             </span>
         </div>
     </div>
+    @endif
 @endcomponent

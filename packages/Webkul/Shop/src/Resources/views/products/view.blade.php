@@ -342,14 +342,16 @@
                                 <!-- Pricing -->
                                 {!! view_render_event('bagisto.shop.products.price.before', ['product' => $product]) !!}
 
-                                <p class="mt-[22px] flex items-center gap-2.5 text-2xl !font-medium max-sm:mt-2 max-sm:gap-x-2.5 max-sm:gap-y-0 max-sm:text-lg">
-                                    {!! $product->getTypeInstance()->getPriceHtml() !!}
-                                </p>
+                                @if (! lagmedical_hide_prices())
+                                    <p class="mt-[22px] flex items-center gap-2.5 text-2xl !font-medium max-sm:mt-2 max-sm:gap-x-2.5 max-sm:gap-y-0 max-sm:text-lg">
+                                        {!! $product->getTypeInstance()->getPriceHtml() !!}
+                                    </p>
 
-                                @if (\Webkul\Tax\Facades\Tax::isInclusiveTaxProductPrices())
-                                    <span class="text-sm font-normal text-zinc-500 max-sm:text-xs">
-                                        (@lang('shop::app.products.view.tax-inclusive'))
-                                    </span>
+                                    @if (\Webkul\Tax\Facades\Tax::isInclusiveTaxProductPrices())
+                                        <span class="text-sm font-normal text-zinc-500 max-sm:text-xs">
+                                            (@lang('shop::app.products.view.tax-inclusive'))
+                                        </span>
+                                    @endif
                                 @endif
 
                                 @if (count($product->getTypeInstance()->getCustomerGroupPricingOffers()))
@@ -408,7 +410,7 @@
                                             class="secondary-button w-full max-w-full max-md:py-3 max-sm:rounded-lg max-sm:py-1.5"
                                             button-type="secondary-button"
                                             :loading="false"
-                                            :title="trans('shop::app.products.view.add-to-cart')"
+                                            :title="lagmedical_is_quote_mode() ? lagmedical_quote_button_label() : trans('shop::app.products.view.add-to-cart')"
                                             :disabled="! $product->isSaleable(1)"
                                             ::loading="isStoring.addToCart"
                                             ::disabled="isStoring.addToCart"
@@ -428,7 +430,7 @@
                                 </div>
 
                                 <!-- Buy Now Button -->
-                                @if (core()->getConfigData('sales.checkout.shopping_cart.cart_page'))
+                                @if (core()->getConfigData('sales.checkout.shopping_cart.cart_page') && ! lagmedical_is_quote_mode())
                                     {!! view_render_event('bagisto.shop.products.view.buy_now.before', ['product' => $product]) !!}
 
                                     @if (core()->getConfigData('catalog.products.storefront.buy_now_button_display'))

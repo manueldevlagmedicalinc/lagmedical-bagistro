@@ -1,7 +1,9 @@
-<p class="price-label text-sm text-zinc-500 max-sm:leading-4">
-    @lang('shop::app.products.prices.grouped.starting-at')
-</p>
+@if (! lagmedical_hide_prices())
+    <p class="price-label text-sm text-zinc-500 max-sm:leading-4">
+        @lang('shop::app.products.prices.grouped.starting-at')
+    </p>
 
-<p class="font-semibold max-sm:leading-4">
-    {{ $prices['final']['formatted_price'] }}
-</p>
+    <p class="font-semibold max-sm:leading-4">
+        {{ $prices['final']['formatted_price'] }}
+    </p>
+@endif

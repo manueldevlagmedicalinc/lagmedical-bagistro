@@ -30,6 +30,7 @@
 
             {!! view_render_event('bagisto.shop.checkout.onepage.summary.item_name.after') !!}
 
+            @if (! lagmedical_hide_prices())
             <p class="mt-2.5 flex flex-col text-lg font-medium max-md:mt-1 max-md:text-base max-md:font-normal max-sm:text-sm">
                 <template v-if="displayTax.prices == 'including_tax'">
                     @lang('shop::app.checkout.onepage.summary.price_and_qty', ['price' => '@{{ item.formatted_price_incl_tax }}', 'qty' => '@{{ item.quantity }}'])
@@ -49,12 +50,18 @@
                     @lang('shop::app.checkout.onepage.summary.price_and_qty', ['price' => '@{{ item.formatted_price }}', 'qty' => '@{{ item.quantity }}'])
                 </template>
             </p>
+            @else
+            <p class="mt-2.5 text-sm text-zinc-500 max-sm:text-xs">
+                Qty: @{{ item.quantity }}
+            </p>
+            @endif
         </div>
     </div>
 </div>
 
 <!-- Cart Totals -->
 <div class="mb-8 mt-6 grid gap-4 max-md:mb-0 max-sm:mt-4 max-sm:gap-2.5">
+    @if (! lagmedical_hide_totals())
     <!-- Sub Total -->
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.sub_total.before') !!}
 
@@ -171,17 +178,21 @@
     </template>
 
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.discount_amount.after') !!}
+    @endif
 
     <!-- Apply Coupon -->
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.coupon.before') !!}
 
-    @include('shop::checkout.coupon')
+    @if (! lagmedical_hide_coupons())
+        @include('shop::checkout.coupon')
+    @endif
 
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.coupon.after') !!}
 
     <!-- Shipping Rates -->
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.delivery_charges.before') !!}
         
+    @if (! lagmedical_hide_shipping_amounts())
     <template v-if="displayTax.shipping == 'including_tax'">
         <div class="flex justify-between text-right">
             <p class="text-base max-sm:text-sm">
@@ -225,11 +236,13 @@
     </template>
 
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.delivery_charges.after') !!}
+    @endif
 
 
     <!-- Taxes -->
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.tax.before') !!}
 
+    @if (! lagmedical_hide_tax())
     <div
         class="flex justify-between text-right"
         v-if="! cart.tax_total"
@@ -295,19 +308,24 @@
     </div>
 
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.tax.after') !!}
+    @endif
 
     <!-- Cart Grand Total -->
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.grand_total.before') !!}
 
-    <div class="flex justify-between text-right">
-        <p class="text-lg font-semibold max-sm:text-sm">
-            @lang('shop::app.checkout.onepage.summary.grand-total')
-        </p>
+    @if (! lagmedical_hide_totals())
+        <div class="flex justify-between text-right">
+            <p class="text-lg font-semibold max-sm:text-sm">
+                @lang('shop::app.checkout.onepage.summary.grand-total')
+            </p>
 
-        <p class="text-lg font-semibold max-sm:text-sm">
-            @{{ cart.formatted_grand_total }}
-        </p>
-    </div>
+            <p class="text-lg font-semibold max-sm:text-sm">
+                @{{ cart.formatted_grand_total }}
+            </p>
+        </div>
+    @else
+        <p class="text-sm text-zinc-500">{{ lagmedical_quote_message() }}</p>
+    @endif
 
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.grand_total.after') !!}
 </div>

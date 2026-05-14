@@ -1,4 +1,5 @@
 @component('shop::emails.layout')
+    @php($isQuoteMode = lagmedical_is_quote_mode())
     <div style="margin-bottom: 34px;">
         <p style="font-weight: bold;font-size: 20px;color: #121A26;line-height: 24px;margin-bottom: 24px">
             @lang('shop::app.emails.dear', ['customer_name' => $comment->order->customer_full_name]), 👋
@@ -15,4 +16,10 @@
     <p style="font-size: 16px;color: #384860;line-height: 24px;margin-bottom: 40px">
         {{ $comment->comment }}
     </p>
+
+    @if ($isQuoteMode)
+        <p style="font-size: 14px;color: #5E5E5E;line-height: 22px; margin-bottom: 20px;">
+            {{ lagmedical_quote_message() }}
+        </p>
+    @endif
 @endcomponent

@@ -53,6 +53,8 @@ class CartResource extends JsonResource
             'have_stockable_items' => $this->haveStockableItems(),
             'payment_method' => $this->payment?->method,
             'payment_method_title' => core()->getConfigData('sales.payment_methods.'.$this->payment?->method.'.title'),
+            'is_quote_mode' => lagmedical_is_quote_mode(),
+            'quote_message' => lagmedical_quote_message(),
         ];
     }
 }

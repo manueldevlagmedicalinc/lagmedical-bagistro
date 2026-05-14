@@ -15,6 +15,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        require_once app_path('Support/lagmedical_helpers.php');
+
         $allowedIPs = array_map('trim', explode(',', config('app.debug_allowed_ips', '')));
 
         $allowedIPs = array_filter($allowedIPs);

@@ -280,6 +280,7 @@
 
                                             {!! view_render_event('bagisto.shop.checkout.cart.formatted_total.before') !!}
 
+                                            @if (! lagmedical_hide_prices())
                                             <div class="md:hidden">
                                                 <p class="text-lg font-semibold max-md:text-sm">
                                                     <template v-if="displayTax.prices == 'including_tax'">
@@ -310,6 +311,7 @@
                                                     @lang('shop::app.checkout.cart.index.remove')
                                                 </span>
                                             </div>
+                                            @endif
 
                                             {!! view_render_event('bagisto.shop.checkout.cart.formatted_total.after') !!}
 
@@ -340,6 +342,7 @@
                                         </div>
                                     </div>
 
+                                    @if (! lagmedical_hide_prices())
                                     <div class="text-right max-md:hidden">
                                         {!! view_render_event('bagisto.shop.checkout.cart.total.before') !!}
 
@@ -383,6 +386,7 @@
 
                                         {!! view_render_event('bagisto.shop.checkout.cart.remove_button.after') !!}
                                     </div>
+                                    @endif
                                 </div>
                             </div>
 

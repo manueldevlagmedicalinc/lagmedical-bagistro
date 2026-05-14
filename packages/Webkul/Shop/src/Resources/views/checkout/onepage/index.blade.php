@@ -94,7 +94,7 @@
                         </template>
 
                         <!-- Included Payment Methods Blade File -->
-                        <template v-if="['payment', 'review'].includes(currentStep)">
+                        <template v-if="! isQuoteMode && ['payment', 'review'].includes(currentStep)">
                             @include('shop::checkout.onepage.payment')
                         </template>
                     </div>
@@ -109,7 +109,7 @@
                             class="flex justify-end"
                             v-if="canPlaceOrder"
                         >
-                            <template v-if="cart.payment_method == 'paypal_smart_button'">
+                            <template v-if="! isQuoteMode && cart.payment_method == 'paypal_smart_button'">
                                 {!! view_render_event('bagisto.shop.checkout.onepage.summary.paypal_smart_button.before') !!}
 
                                 <!-- Paypal Smart Button Vue Component -->
@@ -122,7 +122,7 @@
                                 <x-shop::button
                                     type="button"
                                     class="primary-button w-max rounded-2xl bg-navyBlue px-11 py-3 max-md:mb-4 max-md:w-full max-md:max-w-full max-md:rounded-lg max-sm:py-1.5"
-                                    :title="trans('shop::app.checkout.onepage.summary.place-order')"
+                                    :title="isQuoteMode ? '{{ lagmedical_checkout_button_label() }}' : trans('shop::app.checkout.onepage.summary.place-order')"
                                     ::disabled="isPlacingOrder"
                                     ::loading="isPlacingOrder"
                                     @click="placeOrder"
@@ -159,6 +159,8 @@
                         paymentMethods: null,
 
                         canPlaceOrder: false,
+
+                        isQuoteMode: @json(lagmedical_is_quote_mode()),
                     }
                 },
 

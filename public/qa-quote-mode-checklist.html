@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>QA Checklist - Quote Mode</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 24px; color: #1f2937; }
+        h1, h2, h3 { margin: 0 0 12px; }
+        .muted { color: #6b7280; }
+        .card { border: 1px solid #d1d5db; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #d1d5db; padding: 8px; vertical-align: top; }
+        th { background: #f3f4f6; text-align: left; }
+        input[type="text"], textarea, select { width: 100%; box-sizing: border-box; padding: 6px; }
+        textarea { min-height: 56px; resize: vertical; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .small { font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>QA Visual Checklist - Quote Mode (Lag Medical)</h1>
+    <p class="muted">Archivo estatico para llenar manualmente. No usa base de datos.</p>
+
+    <div class="card">
+        <h2>Datos de ejecucion</h2>
+        <div class="row">
+            <div>
+                <label>Tester</label>
+                <input type="text" placeholder="Nombre">
+            </div>
+            <div>
+                <label>Fecha</label>
+                <input type="text" placeholder="YYYY-MM-DD">
+            </div>
+            <div>
+                <label>Canal quote</label>
+                <input type="text" value="default">
+            </div>
+            <div>
+                <label>Canal normal</label>
+                <input type="text" placeholder="ej: florida-medical-device">
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Pre-check</h2>
+        <ul>
+            <li>`config/lagmedical.php` con `default` en `quote_mode_channels`</li>
+            <li>Cache limpia: `php artisan optimize:clear`</li>
+            <li>Dos sesiones abiertas: quote y normal</li>
+        </ul>
+    </div>
+
+    <div class="card">
+        <h2>Matriz de pruebas</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th style="width: 26%">Caso</th>
+                    <th style="width: 12%">Default</th>
+                    <th style="width: 12%">Normal</th>
+                    <th style="width: 25%">Notas</th>
+                    <th style="width: 25%">Evidencia</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>PDP sin precio / con CTA quote</td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><textarea></textarea></td>
+                    <td><input type="text" placeholder="URL o ruta screenshot"></td>
+                </tr>
+                <tr>
+                    <td>Listing/category/search sin precios</td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><textarea></textarea></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>Mini-cart sin precio/subtotal/total + mensaje</td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><textarea></textarea></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>Cart sin totales/cupon/tax/shipping</td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><textarea></textarea></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>Checkout sin montos y sin pago directo</td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><textarea></textarea></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>Boton final: Submit Order Request</td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><textarea></textarea></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>My Orders sin totales (quote)</td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><textarea></textarea></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>Order PDF sin montos (quote)</td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><textarea></textarea></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>Emails order sin montos (quote)</td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><textarea placeholder="created/invoiced/shipped/refunded/canceled/commented"></textarea></td>
+                    <td><input type="text"></td>
+                </tr>
+                <tr>
+                    <td>Idioma es / pt_BR / fallback en</td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><select><option></option><option>OK</option><option>NOK</option></select></td>
+                    <td><textarea></textarea></td>
+                    <td><input type="text"></td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="small muted">Tip: puedes guardar este HTML con "Guardar como" para conservar lo llenado localmente.</p>
+    </div>
+
+    <div class="card">
+        <h2>Resultado final</h2>
+        <label>Estado</label>
+        <select>
+            <option></option>
+            <option>APROBADO</option>
+            <option>APROBADO CON OBSERVACIONES</option>
+            <option>RECHAZADO</option>
+        </select>
+        <br><br>
+        <label>Observaciones generales</label>
+        <textarea></textarea>
+    </div>
+</body>
+</html>

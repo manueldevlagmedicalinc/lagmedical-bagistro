@@ -80,13 +80,15 @@
                                         <p v-html="record.status"></p>
                                     </div>
         
-                                    <div class="mt-2.5 text-xs font-normal text-neutral-500">
-                                        @lang('shop::app.customers.account.orders.subtotal')
-    
-                                        <p class="text-xl font-semibold text-black">
-                                            @{{ record.grand_total }}
-                                        </p>
-                                    </div>
+                                    @if (! lagmedical_hide_totals())
+                                        <div class="mt-2.5 text-xs font-normal text-neutral-500">
+                                            @lang('shop::app.customers.account.orders.subtotal')
+        
+                                            <p class="text-xl font-semibold text-black">
+                                                @{{ record.grand_total }}
+                                            </p>
+                                        </div>
+                                    @endif
                                 </a>
                             </div>
                         </template>
