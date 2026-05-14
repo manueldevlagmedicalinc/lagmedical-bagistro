@@ -94,7 +94,7 @@
                         </template>
 
                         <!-- Included Payment Methods Blade File -->
-                        <template v-if="! isQuoteMode && ['payment', 'review'].includes(currentStep)">
+                        <template v-if="['payment', 'review'].includes(currentStep)">
                             @include('shop::checkout.onepage.payment')
                         </template>
                     </div>
@@ -109,7 +109,7 @@
                             class="flex justify-end"
                             v-if="canPlaceOrder"
                         >
-                            <template v-if="! isQuoteMode && cart.payment_method == 'paypal_smart_button'">
+                            <template v-if="cart.payment_method == 'paypal_smart_button'">
                                 {!! view_render_event('bagisto.shop.checkout.onepage.summary.paypal_smart_button.before') !!}
 
                                 <!-- Paypal Smart Button Vue Component -->

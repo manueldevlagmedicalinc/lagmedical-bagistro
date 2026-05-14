@@ -104,7 +104,7 @@
 
             methods: {
                 store(selectedMethod) {
-                    this.$emit('processing', "{{ lagmedical_hide_checkout_payment() ? 'review' : 'payment' }}");
+                    this.$emit('processing', 'payment');
 
                     this.$axios.post("{{ route('shop.checkout.onepage.shipping_methods.store') }}", {    
                             shipping_method: selectedMethod,
