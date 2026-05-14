@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'enabled' => true,
+    'enabled' => false,
 
     'quote_mode_channels' => [
         'default',
