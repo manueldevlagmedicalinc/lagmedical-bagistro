@@ -442,7 +442,7 @@
                                             href="{{ $lagmedicalWhatsappUrl }}"
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            class="secondary-button mt-4 inline-flex w-full max-w-[470px] items-center justify-center max-md:py-3 max-sm:rounded-lg max-sm:py-1.5"
+                                            class="mt-4 inline-flex w-full max-w-[470px] items-center justify-center rounded-xl bg-green-600 px-6 py-3 font-medium text-white transition hover:bg-green-700 max-md:py-3 max-sm:rounded-lg max-sm:py-1.5"
                                         >
                                             {{ lagmedical_whatsapp_button_label() }}
                                         </a>
