@@ -112,7 +112,6 @@
 
                                     {!! view_render_event('bagisto.shop.checkout.mini-cart.drawer.content.price.before') !!}
 
-                                    @if (! lagmedical_hide_prices())
                                     <template v-if="displayTax.prices == 'including_tax'">
                                         <p class="text-lg max-md:font-semibold max-sm:text-sm">
                                             @{{ item.formatted_price_incl_tax }}
@@ -138,7 +137,6 @@
                                     </template>
 
                                     {!! view_render_event('bagisto.shop.checkout.mini-cart.drawer.content.price.after') !!}
-                                    @endif
                                 </div>
 
                                 <!-- Cart Item Options Container -->
@@ -267,39 +265,35 @@
                     >
                         {!! view_render_event('bagisto.shop.checkout.mini-cart.subtotal.before') !!}
 
-                        @if (! lagmedical_hide_totals())
-                            <template v-if="! isLoading">
-                                <p class="text-sm font-medium text-zinc-500">
-                                    @lang('shop::app.checkout.cart.mini-cart.subtotal')
-                                </p>
+                        <template v-if="! isLoading">
+                            <p class="text-sm font-medium text-zinc-500">
+                                @lang('shop::app.checkout.cart.mini-cart.subtotal')
+                            </p>
 
-                                <template v-if="displayTax.subtotal == 'including_tax'">
-                                    <p class="text-3xl font-semibold max-md:text-base">
-                                        @{{ cart.formatted_sub_total_incl_tax }}
-                                    </p>
-                                </template>
+                        <template v-if="displayTax.subtotal == 'including_tax'">
+                            <p class="text-3xl font-semibold max-md:text-base">
+                                @{{ cart.formatted_sub_total_incl_tax }}
+                            </p>
+                        </template>
 
-                                <template v-else-if="displayTax.subtotal == 'both'">
-                                    <p class="flex flex-col text-3xl font-semibold max-md:text-sm max-sm:text-right">
-                                        @{{ cart.formatted_sub_total_incl_tax }}
+                        <template v-else-if="displayTax.subtotal == 'both'">
+                            <p class="flex flex-col text-3xl font-semibold max-md:text-sm max-sm:text-right">
+                                @{{ cart.formatted_sub_total_incl_tax }}
 
-                                        <span class="text-sm font-normal text-zinc-500 max-sm:text-xs">
-                                            @lang('shop::app.checkout.cart.mini-cart.excl-tax')
+                                <span class="text-sm font-normal text-zinc-500 max-sm:text-xs">
+                                    @lang('shop::app.checkout.cart.mini-cart.excl-tax')
 
-                                            <span class="font-medium text-black">@{{ cart.formatted_sub_total }}</span>
-                                        </span>
-                                    </p>
-                                </template>
+                                    <span class="font-medium text-black">@{{ cart.formatted_sub_total }}</span>
+                                </span>
+                            </p>
+                        </template>
 
-                                <template v-else>
-                                    <p class="text-3xl font-semibold max-md:text-base">
-                                        @{{ cart.formatted_sub_total }}
-                                    </p>
-                                </template>
-                            </template>
-                        @else
-                            <p class="text-sm text-zinc-500">{{ lagmedical_quote_message() }}</p>
-                        @endif
+                        <template v-else>
+                            <p class="text-3xl font-semibold max-md:text-base">
+                                @{{ cart.formatted_sub_total }}
+                            </p>
+                        </template>
+                    </template>
 
                         <template v-else>
                             <!-- Spinner -->
@@ -340,7 +334,7 @@
                             href="{{ route('shop.checkout.onepage.index') }}"
                             class="mx-auto block w-full cursor-pointer rounded-2xl bg-navyBlue px-11 py-4 text-center text-base font-medium text-white max-md:rounded-lg max-md:px-5 max-md:py-2"
                         >
-                            {{ lagmedical_is_quote_mode() ? lagmedical_checkout_button_label() : trans('shop::app.checkout.cart.mini-cart.continue-to-checkout') }}
+                            @lang('shop::app.checkout.cart.mini-cart.continue-to-checkout')
                         </a>
 
                             {!! view_render_event('bagisto.shop.checkout.mini-cart.continue_to_checkout.after') !!}
