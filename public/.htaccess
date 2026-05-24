@@ -1,3 +1,18 @@
+# SECURITY
+
+Options -Indexes
+
+<FilesMatch "^(?!index\.php$).+\.(php|php5|php7|phtml|phar|cgi|pl|py|sh)$">
+    Require all denied
+</FilesMatch>
+
+RewriteCond %{QUERY_STRING} php://input [NC,OR]
+RewriteCond %{QUERY_STRING} allow_url_include [NC,OR]
+RewriteCond %{QUERY_STRING} auto_prepend_file [NC,OR]
+RewriteCond %{REQUEST_URI} cgi-bin [NC]
+RewriteRule .* - [F,L]
+
+# END SECURITY
 # Rewrite Module
 <IfModule mod_rewrite.c>
     <IfModule mod_negotiation.c>
