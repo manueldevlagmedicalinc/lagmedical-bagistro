@@ -195,12 +195,9 @@
                             @foreach ($customAttributeValues as $customAttributeValue)
                                 @if (! empty($customAttributeValue['value']))
                                     <div class="grid">
-                                        <p
-                                            class="text-base text-black"
-                                            v-pre
-                                        >
-                                            {{ $customAttributeValue['label'] }}
-                                        </p>
+                                        <div class="text-base text-black">
+                                            {!! $customAttributeValue['label'] !!}
+                                        </div>
                                     </div>
 
                                     @if ($customAttributeValue['type'] == 'file')
@@ -223,12 +220,9 @@
                                         </a>
                                     @else
                                         <div class="grid">
-                                            <p
-                                                class="text-base text-zinc-500"
-                                                v-pre
-                                            >
-                                                {{ $customAttributeValue['value'] ?? '-' }}
-                                            </p>
+                                            <div class="text-base text-zinc-500">
+                                                {!! $customAttributeValue['value'] ?? '-' !!}
+                                            </div>
                                         </div>
                                     @endif
                                 @endif
