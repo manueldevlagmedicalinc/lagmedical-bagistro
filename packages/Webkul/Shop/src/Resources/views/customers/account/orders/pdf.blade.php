@@ -16,7 +16,6 @@
 
         @php
             $fontPath = [];
-            $isQuoteMode = lagmedical_is_quote_mode();
 
             if (app()->getLocale() == 'en' && $orderCurrencyCode == 'INR') {
                 $fontFamily = [
@@ -242,7 +241,6 @@
             </div>
 
             <div class="page-content">
-                @if (! $isQuoteMode)
                 <!-- Invoice Information -->
                 <table class="{{ core()->getCurrentLocale()->direction }}">
                     <tbody>
@@ -295,7 +293,6 @@
                         </tr>
                     </tbody>
                 </table>
-                @endif
 
                 <!-- Invoice Information -->
                 <table class="{{ core()->getCurrentLocale()->direction }}">
@@ -463,21 +460,17 @@
                                     @lang('shop::app.customers.account.orders.invoice-pdf.product-name')
                                 </th>
 
-                                @if (! $isQuoteMode)
-                                    <th>
-                                        @lang('shop::app.customers.account.orders.invoice-pdf.price')
-                                    </th>
-                                @endif
+                                <th>
+                                    @lang('shop::app.customers.account.orders.invoice-pdf.price')
+                                </th>
 
                                 <th>
                                     @lang('shop::app.customers.account.orders.invoice-pdf.qty')
                                 </th>
 
-                                @if (! $isQuoteMode)
-                                    <th>
-                                        @lang('shop::app.customers.account.orders.invoice-pdf.subtotal')
-                                    </th>
-                                @endif
+                                <th>
+                                    @lang('shop::app.customers.account.orders.invoice-pdf.subtotal')
+                                </th>
                             </tr>
                         </thead>
 
@@ -517,49 +510,45 @@
                                         @endif
                                     </td>
 
-                                    @if (! $isQuoteMode)
-                                        <td>
-                                            @if (core()->getConfigData('sales.taxes.sales.display_prices') == 'including_tax')
-                                                {!! core()->formatPrice($item->price_incl_tax, $orderCurrencyCode) !!}
-                                            @elseif (core()->getConfigData('sales.taxes.sales.display_prices') == 'both')
-                                                {!! core()->formatPrice($item->price_incl_tax, $orderCurrencyCode) !!}
+                                    <td>
+                                        @if (core()->getConfigData('sales.taxes.sales.display_prices') == 'including_tax')
+                                            {!! core()->formatPrice($item->price_incl_tax, $orderCurrencyCode) !!}
+                                        @elseif (core()->getConfigData('sales.taxes.sales.display_prices') == 'both')
+                                            {!! core()->formatPrice($item->price_incl_tax, $orderCurrencyCode) !!}
 
-                                                <div class="small-text">
-                                                    @lang('shop::app.customers.account.orders.invoice-pdf.excl-tax')
+                                            <div class="small-text">
+                                                @lang('shop::app.customers.account.orders.invoice-pdf.excl-tax')
 
-                                                    <span>
-                                                        {{ core()->formatPrice($item->price, $orderCurrencyCode) }}
-                                                    </span>
-                                                </div>
-                                            @else
-                                                {!! core()->formatPrice($item->price, $orderCurrencyCode) !!}
-                                            @endif
-                                        </td>
-                                    @endif
+                                                <span>
+                                                    {{ core()->formatPrice($item->price, $orderCurrencyCode) }}
+                                                </span>
+                                            </div>
+                                        @else
+                                            {!! core()->formatPrice($item->price, $orderCurrencyCode) !!}
+                                        @endif
+                                    </td>
 
                                     <td>
                                         {{ $item->qty }}
                                     </td>
 
-                                    @if (! $isQuoteMode)
-                                        <td>
-                                            @if (core()->getConfigData('sales.taxes.sales.display_subtotal') == 'including_tax')
-                                                {!! core()->formatPrice($item->total_incl_tax, $orderCurrencyCode) !!}
-                                            @elseif (core()->getConfigData('sales.taxes.sales.display_subtotal') == 'both')
-                                                {!! core()->formatPrice($item->total_incl_tax, $orderCurrencyCode) !!}
+                                    <td>
+                                        @if (core()->getConfigData('sales.taxes.sales.display_subtotal') == 'including_tax')
+                                            {!! core()->formatPrice($item->total_incl_tax, $orderCurrencyCode) !!}
+                                        @elseif (core()->getConfigData('sales.taxes.sales.display_subtotal') == 'both')
+                                            {!! core()->formatPrice($item->total_incl_tax, $orderCurrencyCode) !!}
 
-                                                <div class="small-text">
-                                                    @lang('shop::app.customers.account.orders.invoice-pdf.excl-tax')
+                                            <div class="small-text">
+                                                @lang('shop::app.customers.account.orders.invoice-pdf.excl-tax')
 
-                                                    <span>
-                                                        {{ core()->formatPrice($item->total, $orderCurrencyCode) }}
-                                                    </span>
-                                                </div>
-                                            @else
-                                                {!! core()->formatPrice($item->total, $orderCurrencyCode) !!}
-                                            @endif
-                                        </td>
-                                    @endif
+                                                <span>
+                                                    {{ core()->formatPrice($item->total, $orderCurrencyCode) }}
+                                                </span>
+                                            </div>
+                                        @else
+                                            {!! core()->formatPrice($item->total, $orderCurrencyCode) !!}
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -568,9 +557,6 @@
 
                 <!-- Summary Table -->
                 <div class="summary">
-                    @if ($isQuoteMode)
-                        <p>{{ lagmedical_quote_message() }}</p>
-                    @else
                     <table class="{{ core()->getCurrentLocale()->direction }}">
                         <tbody>
                             @if (core()->getConfigData('sales.taxes.sales.display_subtotal') == 'including_tax')
@@ -648,7 +634,6 @@
                             </tr>
                         </tbody>
                     </table>
-                    @endif
                 </div>
             </div>
         </div>
