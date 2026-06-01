@@ -1,2 +1,11 @@
 *
 !.gitignore
+!vendor/
+vendor/*
+!vendor/shop/
+vendor/shop/*
+!vendor/shop/emails/
+vendor/shop/emails/*
+!vendor/shop/emails/orders/
+vendor/shop/emails/orders/*
+!vendor/shop/emails/orders/created.blade.php
