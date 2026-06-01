@@ -1,6 +1,5 @@
 @component('shop::emails.layout')
-    @php($isQuoteMode = lagmedical_is_quote_mode())
-    @php($columns = $isQuoteMode ? ['sku', 'name', 'qty'] : ['sku', 'name', 'price', 'qty'])
+    @php($isLagMedicalQuote = lagmedical_is_quote_mode() ? 'SI' : 'NO')
     <div style="margin-bottom: 34px;">
         <span style="font-size: 22px;font-weight: 600;color: #121A26">
             @lang('shop::app.emails.orders.created.title')
@@ -16,6 +15,10 @@
                     'created_at' => core()->formatDate($order->created_at, 'Y-m-d H:i:s')
                 ])
             !!}
+        </p>
+
+        <p style="font-size: 13px;color: #5E5E5E;line-height: 20px;">
+            IsLagMedical: {{ $isLagMedicalQuote }}
         </p>
     </div>
 
@@ -78,41 +81,33 @@
                     @lang('shop::app.emails.orders.contact') : {{ $order->billing_address->phone }}
                 </div>
 
-                @if (! $isQuoteMode)
-                    <div style="font-size: 16px;font-weight: 600;color: #121A26;">
-                        @lang('shop::app.emails.orders.payment')
+                <div style="font-size: 16px;font-weight: 600;color: #121A26;">
+                    @lang('shop::app.emails.orders.payment')
+                </div>
+
+                <div style="font-size: 16px;font-weight: 400;color: #384860;">
+                    {{ core()->getConfigData('sales.payment_methods.' . $order->payment->method . '.title') }}
+                </div>
+
+                @php $additionalDetails = \Webkul\Payment\Payment::getAdditionalDetails($order->payment->method); @endphp
+
+                @if (! empty($additionalDetails))
+                    <div style="font-size: 16px; color: #384860;">
+                        <div>{{ $additionalDetails['title'] }}</div>
+
+                        <div>{{ $additionalDetails['value'] }}</div>
                     </div>
-
-                    <div style="font-size: 16px;font-weight: 400;color: #384860;">
-                        {{ core()->getConfigData('sales.payment_methods.' . $order->payment->method . '.title') }}
-                    </div>
-
-                    @php $additionalDetails = \Webkul\Payment\Payment::getAdditionalDetails($order->payment->method); @endphp
-
-                    @if (! empty($additionalDetails))
-                        <div style="font-size: 16px; color: #384860;">
-                            <div>{{ $additionalDetails['title'] }}</div>
-
-                            <div>{{ $additionalDetails['value'] }}</div>
-                        </div>
-                    @endif
                 @endif
             </div>
         @endif
     </div>
-
-    @if ($isQuoteMode)
-        <p style="font-size: 14px;color: #5E5E5E;line-height: 22px; margin-bottom: 20px;">
-            {{ lagmedical_quote_message() }}
-        </p>
-    @endif
 
     <div style="padding-bottom: 40px;border-bottom: 1px solid #CBD5E1;">
         <table style="overflow-x: auto; border-collapse: collapse;
         border-spacing: 0;width: 100%">
             <thead>
                 <tr style="color: #121A26;border-top: 1px solid #CBD5E1;border-bottom: 1px solid #CBD5E1;">
-                    @foreach ($columns as $item)
+                    @foreach (['sku', 'name', 'price', 'qty'] as $item)
                         <th style="text-align: left;padding: 15px">
                             @lang('shop::app.emails.orders.' . $item)
                         </th>
@@ -156,25 +151,23 @@
                             @endif
                         </td>
 
-                        @if (! $isQuoteMode)
-                            <td style="display: flex;flex-direction: column;text-align: left;padding: 15px">
-                                @if (core()->getConfigData('sales.taxes.sales.display_prices') == 'including_tax')
-                                    {{ core()->formatPrice($item->price_incl_tax, $order->order_currency_code) }}
-                                @elseif (core()->getConfigData('sales.taxes.sales.display_prices') == 'both')
-                                    {{ core()->formatPrice($item->price_incl_tax, $order->order_currency_code) }}
+                        <td style="display: flex;flex-direction: column;text-align: left;padding: 15px">
+                            @if (core()->getConfigData('sales.taxes.sales.display_prices') == 'including_tax')
+                                {{ core()->formatPrice($item->price_incl_tax, $order->order_currency_code) }}
+                            @elseif (core()->getConfigData('sales.taxes.sales.display_prices') == 'both')
+                                {{ core()->formatPrice($item->price_incl_tax, $order->order_currency_code) }}
 
-                                    <span style="font-size: 12px; white-space: nowrap">
-                                        @lang('shop::app.emails.orders.excl-tax')
+                                <span style="font-size: 12px; white-space: nowrap">
+                                    @lang('shop::app.emails.orders.excl-tax')
 
-                                        <span style="font-weight: 600">
-                                            {{ core()->formatPrice($item->price, $order->order_currency_code) }}
-                                        </span>
+                                    <span style="font-weight: 600">
+                                        {{ core()->formatPrice($item->price, $order->order_currency_code) }}
                                     </span>
-                                @else
-                                    {{ core()->formatPrice($item->price, $order->order_currency_code) }}
-                                @endif
-                            </td>
-                        @endif
+                                </span>
+                            @else
+                                {{ core()->formatPrice($item->price, $order->order_currency_code) }}
+                            @endif
+                        </td>
 
                         <td style="text-align: left;padding: 15px">
                             {{ $item->qty_ordered }}
@@ -185,68 +178,123 @@
         </table>
     </div>
 
-    @unless ($isQuoteMode)
-        <div style="display: grid;justify-content: end;font-size: 16px;color: #384860;line-height: 30px;padding-top: 20px;padding-bottom: 20px;">
-            @if (core()->getConfigData('sales.taxes.sales.display_subtotal') == 'including_tax')
+    <div style="display: grid;justify-content: end;font-size: 16px;color: #384860;line-height: 30px;padding-top: 20px;padding-bottom: 20px;">
+        @if (core()->getConfigData('sales.taxes.sales.display_subtotal') == 'including_tax')
+            <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <span>
+                    @lang('shop::app.emails.orders.subtotal')
+                </span>
+
+                <span style="text-align: right;">
+                    {{ core()->formatPrice($order->sub_total, $order->order_currency_code_incl_tax) }}
+                </span>
+            </div>
+        @elseif (core()->getConfigData('sales.taxes.sales.display_subtotal') == 'both')
+            <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <span>
+                    @lang('shop::app.emails.orders.subtotal-excl-tax')
+                </span>
+
+                <span style="text-align: right;">
+                    {{ core()->formatPrice($order->sub_total, $order->order_currency_code) }}
+                </span>
+            </div>
+
+            <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <span>
+                    @lang('shop::app.emails.orders.subtotal-incl-tax')
+                </span>
+
+                <span style="text-align: right;">
+                    {{ core()->formatPrice($order->sub_total, $order->order_currency_code_incl_tax) }}
+                </span>
+            </div>
+        @else
+            <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <span>
+                    @lang('shop::app.emails.orders.subtotal')
+                </span>
+
+                <span style="text-align: right;">
+                    {{ core()->formatPrice($order->sub_total, $order->order_currency_code) }}
+                </span>
+            </div>
+        @endif
+
+        @if ($order->shipping_address)
+            @if (core()->getConfigData('sales.taxes.sales.display_shipping_amount') == 'including_tax')
                 <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
-                    <span>@lang('shop::app.emails.orders.subtotal')</span>
-                    <span style="text-align: right;">{{ core()->formatPrice($order->sub_total, $order->order_currency_code_incl_tax) }}</span>
+                    <span>
+                        @lang('shop::app.emails.orders.shipping-handling')
+                    </span>
+
+                    <span style="text-align: right;">
+                        {{ core()->formatPrice($order->shipping_amount_incl_tax, $order->order_currency_code) }}
+                    </span>
                 </div>
-            @elseif (core()->getConfigData('sales.taxes.sales.display_subtotal') == 'both')
+            @elseif (core()->getConfigData('sales.taxes.sales.display_shipping_amount') == 'both')
                 <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
-                    <span>@lang('shop::app.emails.orders.subtotal-excl-tax')</span>
-                    <span style="text-align: right;">{{ core()->formatPrice($order->sub_total, $order->order_currency_code) }}</span>
+                    <span>
+                        @lang('shop::app.emails.orders.shipping-handling-excl-tax')
+                    </span>
+
+                    <span style="text-align: right;">
+                        {{ core()->formatPrice($order->shipping_amount, $order->order_currency_code) }}
+                    </span>
                 </div>
+
                 <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
-                    <span>@lang('shop::app.emails.orders.subtotal-incl-tax')</span>
-                    <span style="text-align: right;">{{ core()->formatPrice($order->sub_total, $order->order_currency_code_incl_tax) }}</span>
+                    <span>
+                        @lang('shop::app.emails.orders.shipping-handling-incl-tax')
+                    </span>
+
+                    <span style="text-align: right;">
+                        {{ core()->formatPrice($order->shipping_amount_incl_tax, $order->order_currency_code) }}
+                    </span>
                 </div>
             @else
                 <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
-                    <span>@lang('shop::app.emails.orders.subtotal')</span>
-                    <span style="text-align: right;">{{ core()->formatPrice($order->sub_total, $order->order_currency_code) }}</span>
+                    <span>
+                        @lang('shop::app.emails.orders.shipping-handling')
+                    </span>
+
+                    <span style="text-align: right;">
+                        {{ core()->formatPrice($order->shipping_amount, $order->order_currency_code) }}
+                    </span>
                 </div>
             @endif
+        @endif
 
-            @if ($order->shipping_address)
-                @if (core()->getConfigData('sales.taxes.sales.display_shipping_amount') == 'including_tax')
-                    <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
-                        <span>@lang('shop::app.emails.orders.shipping-handling')</span>
-                        <span style="text-align: right;">{{ core()->formatPrice($order->shipping_amount_incl_tax, $order->order_currency_code) }}</span>
-                    </div>
-                @elseif (core()->getConfigData('sales.taxes.sales.display_shipping_amount') == 'both')
-                    <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
-                        <span>@lang('shop::app.emails.orders.shipping-handling-excl-tax')</span>
-                        <span style="text-align: right;">{{ core()->formatPrice($order->shipping_amount, $order->order_currency_code) }}</span>
-                    </div>
-                    <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
-                        <span>@lang('shop::app.emails.orders.shipping-handling-incl-tax')</span>
-                        <span style="text-align: right;">{{ core()->formatPrice($order->shipping_amount_incl_tax, $order->order_currency_code) }}</span>
-                    </div>
-                @else
-                    <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
-                        <span>@lang('shop::app.emails.orders.shipping-handling')</span>
-                        <span style="text-align: right;">{{ core()->formatPrice($order->shipping_amount, $order->order_currency_code) }}</span>
-                    </div>
-                @endif
-            @endif
+        <div style="display: grid;gap: 100px;grid-template-columns: repeat(2, minmax(0, 1fr));">
+            <span>
+                @lang('shop::app.emails.orders.tax')
+            </span>
 
-            <div style="display: grid;gap: 100px;grid-template-columns: repeat(2, minmax(0, 1fr));">
-                <span>@lang('shop::app.emails.orders.tax')</span>
-                <span style="text-align: right;">{{ core()->formatPrice($order->tax_amount, $order->order_currency_code) }}</span>
-            </div>
-
-            @if ($order->discount_amount > 0)
-                <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
-                    <span>@lang('shop::app.emails.orders.discount')</span>
-                    <span style="text-align: right;">{{ core()->formatPrice($order->discount_amount, $order->order_currency_code) }}</span>
-                </div>
-            @endif
-
-            <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));font-weight: bold">
-                <span>@lang('shop::app.emails.orders.grand-total')</span>
-                <span style="text-align: right;">{{ core()->formatPrice($order->grand_total, $order->order_currency_code) }}</span>
-            </div>
+            <span style="text-align: right;">
+                {{ core()->formatPrice($order->tax_amount, $order->order_currency_code) }}
+            </span>
         </div>
-    @endunless
+
+        @if ($order->discount_amount > 0)
+            <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));">
+                <span>
+                    @lang('shop::app.emails.orders.discount')
+                </span>
+
+                <span style="text-align: right;">
+                    {{ core()->formatPrice($order->discount_amount, $order->order_currency_code) }}
+                </span>
+            </div>
+        @endif
+
+        <div style="display: grid;gap: 20px;grid-template-columns: repeat(2, minmax(0, 1fr));font-weight: bold">
+            <span>
+                @lang('shop::app.emails.orders.grand-total')
+            </span>
+
+            <span style="text-align: right;">
+                {{ core()->formatPrice($order->grand_total, $order->order_currency_code) }}
+            </span>
+        </div>
+    </div>
 @endcomponent
