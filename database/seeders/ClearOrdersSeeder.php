@@ -23,6 +23,8 @@ class ClearOrdersSeeder extends Seeder
             'order_payment',
             'order_comments',
             'downloadable_link_purchased',
+            'notifications',
+            'rma',
             'orders',
         ];
 

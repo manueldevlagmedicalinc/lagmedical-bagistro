@@ -9,3 +9,7 @@ vendor/shop/emails/*
 !vendor/shop/emails/orders/
 vendor/shop/emails/orders/*
 !vendor/shop/emails/orders/created.blade.php
+!vendor/shop/emails/orders/partials/
+vendor/shop/emails/orders/partials/*
+!vendor/shop/emails/orders/partials/defaultPrice.blade.php
+!vendor/shop/emails/orders/partials/hiddenPrice.blade.php
