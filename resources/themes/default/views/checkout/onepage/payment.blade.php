@@ -130,14 +130,6 @@
                         })
                         .then(response => {
                             this.$emit('processed', response.data.cart);
-
-                            // Used in mobile view. 
-                            if (window.innerWidth <= 768) {
-                                window.scrollTo({
-                                    top: document.body.scrollHeight,
-                                    behavior: 'smooth'
-                                });
-                            }
                         })
                         .catch(error => {
                             this.$emit('processing', 'payment');
