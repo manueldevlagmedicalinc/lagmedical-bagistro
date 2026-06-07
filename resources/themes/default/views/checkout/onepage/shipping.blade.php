@@ -23,9 +23,9 @@
             </template>
 
             <template v-else>
-                <!-- Accordion Blade Component -->
+                <!-- Checkout Step Accordion: Shipping Method -->
                 <x-shop::accordion class="overflow-hidden !border-0 !shadow-none max-md:!bg-transparent">
-                    <!-- Accordion Blade Component Header -->
+                    <!-- Shipping Method Accordion Header -->
                     <x-slot:header class="border-b border-zinc-200 px-6 py-5 max-md:border-b-0 max-md:px-4 max-md:py-4 max-md:text-sm max-md:font-medium">
                         <div class="flex items-center justify-between">
                             <h2 class="text-xl font-semibold tracking-tight max-md:text-base">
@@ -34,8 +34,8 @@
                         </div>
                     </x-slot>
 
-                    <!-- Accordion Blade Component Content -->
-                    <x-slot:content class="px-6 pb-6 pt-0 max-md:px-4 max-md:pb-4 max-md:pt-0">
+                    <!-- Shipping Method Accordion Content -->
+                    <x-slot:content class="px-6 pb-6 pt-3 max-md:px-4 max-md:pb-4 max-md:pt-0">
                         <div class="flex flex-wrap gap-4 max-md:gap-3">
                             <template v-for="method in methods">
                                 {!! view_render_event('bagisto.shop.checkout.onepage.shipping_method.before') !!}
