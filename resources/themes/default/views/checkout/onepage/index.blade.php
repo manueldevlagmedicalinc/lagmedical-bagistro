@@ -76,7 +76,6 @@
                 <div class="grid grid-cols-[1fr_auto] gap-8 max-lg:grid-cols-[1fr] max-md:gap-5">
                     <!-- Included Checkout Summary Blade File For Mobile view -->
                     <div class="hidden max-md:block">
-                        Is a test
                         @include('shop::checkout.onepage.summary')
                     </div>
 
