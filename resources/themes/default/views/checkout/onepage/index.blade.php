@@ -19,7 +19,7 @@
 
     <!-- Page Header -->
     <div class="flex-wrap">
-        <div class="mx-auto flex w-full justify-between border border-b border-l-0 border-r-0 border-t-0 px-[60px] py-4 max-lg:px-8 lg:w-[90%] lg:max-w-[90%] lg:px-0 max-sm:px-4">
+        <div class="flex w-full justify-between border border-b border-l-0 border-r-0 border-t-0 px-[60px] py-4 max-lg:px-8 max-sm:px-4">
             <div class="flex items-center gap-x-14 max-[1180px]:gap-x-9">
                 <a
                     href="{{ route('shop.home.index') }}"
@@ -44,7 +44,7 @@
     {!! view_render_event('bagisto.shop.checkout.onepage.header.after') !!}
 
     <!-- Page Content -->
-    <div class="mx-auto w-full px-[60px] max-lg:px-8 lg:w-[90%] lg:max-w-[90%] lg:px-0 max-sm:px-4">
+    <div class="container px-[60px] max-lg:px-8 max-sm:px-4">
 
         {!! view_render_event('bagisto.shop.checkout.onepage.breadcrumbs.before') !!}
 
@@ -73,7 +73,7 @@
             </template>
 
             <template v-else>
-                <div class="grid grid-cols-[minmax(0,1fr)_442px] gap-6 max-lg:grid-cols-1">
+                <div class="grid grid-cols-[1fr_auto] gap-8 max-lg:grid-cols-[1fr] max-md:gap-5">
                     <div class="rounded-3xl border border-zinc-200 bg-white p-4 shadow-sm ring-1 ring-zinc-200/60 lg:p-6">
                         <div
                             class="grid gap-5"
@@ -97,7 +97,7 @@
                     </div>
 
                     <!-- Included Checkout Summary Blade File For Desktop view -->
-                    <div class="block h-max max-w-full self-start lg:sticky lg:top-8">
+                    <div class="sticky top-8 block h-max w-[442px] max-w-full max-lg:w-auto max-lg:max-w-[442px] ltr:pl-8 max-lg:ltr:pl-0 rtl:pr-8 max-lg:rtl:pr-0">
                         <div class="rounded-3xl border border-zinc-200 bg-white p-4 shadow-sm ring-1 ring-zinc-200/60 lg:p-6">
                             @include('shop::checkout.onepage.summary')
 
