@@ -36,7 +36,7 @@
                     </x-slot>
 
                     <!-- Payment Method Accordion Content -->
-                    <x-slot:content class="px-6 pb-6 pt-0 max-md:px-4 max-md:pb-4">
+                    <x-slot:content class="px-6 pb-6 pt-3 max-md:px-4 max-md:pb-4">
                         <div class="flex flex-wrap gap-4 max-md:gap-3">
                             <div 
                                 class="relative min-w-[220px] flex-1 cursor-pointer max-md:min-w-0 max-md:flex-auto"
