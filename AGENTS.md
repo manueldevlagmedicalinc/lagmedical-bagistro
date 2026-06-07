@@ -184,3 +184,48 @@ php artisan db:seed              # Seed database
 4. No `env()` calls outside `config/` files
 5. New models have Contract + Model + Proxy + Repository
 6. New packages registered in `bootstrap/providers.php` and `config/concord.php`
+
+
+
+## Project Documentation
+
+Load and use all documentation files under `/docs` as project context.
+
+Current documentation:
+
+- docs/lagmedical-b2b-rules.md
+- docs/bagisto-dev-rules.md
+- docs/seo-aeo-rules.md
+
+When new files are added to `/docs`, review and use them as part of the project knowledge base.
+
+These documents contain project-specific rules, business logic, architecture decisions, development standards, SEO/AEO guidelines, infrastructure requirements, and operational procedures.
+
+If instructions conflict:
+1. AGENTS.md has highest priority.
+2. Documentation in `/docs` has second priority.
+3. General framework conventions have third priority.
+
+Before proposing solutions, consider both AGENTS.md and all files under `/docs`.
+
+
+
+## Critical Rule
+
+Do not modify anything inside:
+
+packages/Webkul/*
+
+Assume Webkul code is vendor code.
+
+Always propose a solution using:
+
+- Theme overrides
+- Custom packages
+- Extensions
+- Events
+- Listeners
+- Dependency injection
+- Service container bindings
+
+Only touch Webkul files if explicitly instructed by the user.

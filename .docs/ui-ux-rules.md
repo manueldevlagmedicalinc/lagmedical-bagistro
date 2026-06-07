@@ -41,3 +41,29 @@ Keep forms:
 - Simple
 - Fast
 - Business focused
+
+
+
+## UI Customization Rule
+
+Never edit files inside:
+
+packages/Webkul/*
+
+All visual modifications must be implemented inside the Lag Medical theme.
+
+Use:
+
+- Theme overrides
+- Custom Blade components
+- Custom Tailwind components
+- Theme-specific assets
+
+Do not modify:
+
+- Webkul views
+- Webkul layouts
+- Webkul Vue components
+- Webkul assets
+
+The active theme must contain all UI customizations.
