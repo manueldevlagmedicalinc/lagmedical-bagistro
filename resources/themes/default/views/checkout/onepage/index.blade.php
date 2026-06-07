@@ -19,7 +19,7 @@
 
     <!-- Page Header -->
     <div class="flex-wrap">
-        <div class="mx-auto flex w-full justify-between border border-b border-l-0 border-r-0 border-t-0 px-[60px] py-4 max-lg:px-8 lg:w-[90%] lg:px-0 max-sm:px-4">
+        <div class="mx-auto flex w-full justify-between border border-b border-l-0 border-r-0 border-t-0 px-[60px] py-4 max-lg:px-8 lg:w-[90%] lg:max-w-[90%] lg:px-0 max-sm:px-4">
             <div class="flex items-center gap-x-14 max-[1180px]:gap-x-9">
                 <a
                     href="{{ route('shop.home.index') }}"
@@ -44,7 +44,7 @@
     {!! view_render_event('bagisto.shop.checkout.onepage.header.after') !!}
 
     <!-- Page Content -->
-    <div class="container px-[60px] max-lg:px-8 lg:w-[90%] lg:px-0 lg:mx-auto max-sm:px-4">
+    <div class="mx-auto w-full px-[60px] max-lg:px-8 lg:w-[90%] lg:max-w-[90%] lg:px-0 max-sm:px-4">
 
         {!! view_render_event('bagisto.shop.checkout.onepage.breadcrumbs.before') !!}
 
