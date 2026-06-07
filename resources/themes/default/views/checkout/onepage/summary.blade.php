@@ -1,6 +1,5 @@
 <!-- Header -->
 <h1 class="text-2xl font-medium max-md:py-4 max-md:text-base">
-    ----
     @lang('shop::app.checkout.onepage.summary.cart-summary')
 </h1>
 
