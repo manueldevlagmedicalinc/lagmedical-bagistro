@@ -1,12 +1,15 @@
-<!-- Header -->
-<h1 class="text-2xl font-medium max-md:py-4 max-md:text-base">
-    @lang('shop::app.checkout.onepage.summary.cart-summary')
-</h1>
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between border-b border-zinc-200 pb-4">
+        <h1 class="text-2xl font-semibold tracking-tight max-md:text-base">
+            @lang('shop::app.checkout.onepage.summary.cart-summary')
+        </h1>
+    </div>
 
-<!-- Cart Items -->
-<div class="mt-10 grid border-b border-zinc-200 max-md:mt-3 max-sm:mt-0">
+    <!-- Cart Items -->
+    <div class="grid gap-4 border-b border-zinc-200 pb-5 max-md:gap-3">
     <div
-        class="flex gap-x-4 pb-5 max-md:gap-x-3 max-md:pb-4"
+        class="flex gap-x-4 rounded-2xl border border-zinc-100 p-3 transition hover:border-zinc-200 max-md:gap-x-3 max-md:rounded-xl"
         v-for="item in cart.items"
     >
         {!! view_render_event('bagisto.shop.checkout.onepage.summary.item_image.before') !!}
@@ -57,10 +60,10 @@
             @endif
         </div>
     </div>
-</div>
+    </div>
 
-<!-- Cart Totals -->
-<div class="mb-8 mt-6 grid gap-4 max-md:mb-0 max-sm:mt-4 max-sm:gap-2.5">
+    <!-- Cart Totals -->
+    <div class="grid gap-4 pt-1 max-sm:gap-2.5">
     @if (! lagmedical_hide_totals())
     <!-- Sub Total -->
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.sub_total.before') !!}
@@ -328,4 +331,5 @@
     @endif
 
     {!! view_render_event('bagisto.shop.checkout.onepage.summary.grand_total.after') !!}
+    </div>
 </div>

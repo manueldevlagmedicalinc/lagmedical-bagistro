@@ -16,7 +16,7 @@
         type="text/x-template"
         id="v-shipping-methods-template"
     >
-        <div class="mb-7 max-md:mb-0">
+        <div class="mb-7 overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm max-md:mb-0 max-md:rounded-xl">
             <template v-if="! methods">
                 <!-- Shipping Method Shimmer Effect -->
                 <x-shop::shimmer.checkout.onepage.shipping-method />
@@ -24,24 +24,24 @@
 
             <template v-else>
                 <!-- Accordion Blade Component -->
-                <x-shop::accordion class="overflow-hidden !border-b-0 max-md:rounded-lg max-md:!border-none max-md:!bg-gray-100">
+                <x-shop::accordion class="overflow-hidden !border-0 !shadow-none max-md:!bg-transparent">
                     <!-- Accordion Blade Component Header -->
-                    <x-slot:header class="px-0 py-4 max-md:p-3 max-md:text-sm max-md:font-medium max-sm:p-2">
+                    <x-slot:header class="border-b border-zinc-200 px-6 py-5 max-md:border-b-0 max-md:px-4 max-md:py-4 max-md:text-sm max-md:font-medium">
                         <div class="flex items-center justify-between">
-                            <h2 class="text-2xl font-medium max-md:text-base">
+                            <h2 class="text-xl font-semibold tracking-tight max-md:text-base">
                                 @lang('shop::app.checkout.onepage.shipping.shipping-method')
                             </h2>
                         </div>
                     </x-slot>
 
                     <!-- Accordion Blade Component Content -->
-                    <x-slot:content class="mt-8 !p-0 max-md:mt-0 max-md:rounded-t-none max-md:border max-md:border-t-0 max-md:!p-4">
-                        <div class="flex flex-wrap gap-8 max-md:gap-4 max-sm:gap-2.5">
+                    <x-slot:content class="px-6 pb-6 pt-0 max-md:px-4 max-md:pb-4 max-md:pt-0">
+                        <div class="flex flex-wrap gap-4 max-md:gap-3">
                             <template v-for="method in methods">
                                 {!! view_render_event('bagisto.shop.checkout.onepage.shipping_method.before') !!}
 
                                 <div
-                                    class="relative max-w-[218px] select-none max-md:max-w-full max-md:flex-auto"
+                                    class="relative min-w-[240px] flex-1 select-none max-md:min-w-0 max-md:flex-auto"
                                     v-for="rate in method.rates"
                                 >
                                     <input 
@@ -60,7 +60,7 @@
                                     </label>
 
                                     <label 
-                                        class="block cursor-pointer rounded-xl border border-zinc-200 p-5 max-sm:flex max-sm:gap-4 max-sm:rounded-lg max-sm:px-4 max-sm:py-2.5"
+                                        class="block cursor-pointer rounded-2xl border border-zinc-200 bg-white p-5 transition duration-200 hover:border-navyBlue/30 hover:bg-slate-50 peer-checked:border-navyBlue peer-checked:bg-blue-50/40 peer-checked:ring-1 peer-checked:ring-navyBlue/20 max-sm:flex max-sm:gap-4 max-sm:rounded-xl max-sm:px-4 max-sm:py-3"
                                         :for="rate.method"
                                     >
                                         <span class="icon-flate-rate text-6xl text-navyBlue max-sm:text-5xl"></span>

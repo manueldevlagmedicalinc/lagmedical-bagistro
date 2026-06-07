@@ -427,7 +427,7 @@
 
                         <!-- Cart Summary Blade File -->
                         @include('shop::checkout.cart.summary')
-                        test
+                    
                         {!! view_render_event('bagisto.shop.checkout.cart.summary.after') !!}
                     </div>
 

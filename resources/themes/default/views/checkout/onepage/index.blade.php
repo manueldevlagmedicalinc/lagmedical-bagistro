@@ -73,61 +73,58 @@
             </template>
 
             <template v-else>
-                <div class="grid grid-cols-[1fr_auto] gap-8 max-lg:grid-cols-[1fr] max-md:gap-5">
-                    <!-- Included Checkout Summary Blade File For Mobile view -->
-                    <div class="hidden max-md:block">
-                        @include('shop::checkout.onepage.summary')
-                    </div>
+                <div class="grid grid-cols-[minmax(0,1fr)_442px] gap-6 max-lg:grid-cols-1">
+                    <div class="rounded-3xl border border-zinc-200 bg-white p-4 shadow-sm ring-1 ring-zinc-200/60 lg:p-6">
+                        <div
+                            class="grid gap-5"
+                            id="steps-container"
+                        >
+                            <!-- Included Addresses Blade File -->
+                            <template v-if="['address', 'shipping', 'payment', 'review'].includes(currentStep)">
+                                @include('shop::checkout.onepage.address')
+                            </template>
 
-                    <div
-                        class="overflow-y-auto max-md:grid max-md:gap-4"
-                        id="steps-container"
-                    >
-                        <!-- Included Addresses Blade File -->
-                        <template v-if="['address', 'shipping', 'payment', 'review'].includes(currentStep)">
-                            @include('shop::checkout.onepage.address')
-                        </template>
+                            <!-- Included Shipping Methods Blade File -->
+                            <template v-if="cart.have_stockable_items && ['shipping', 'payment', 'review'].includes(currentStep)">
+                                @include('shop::checkout.onepage.shipping')
+                            </template>
 
-                        <!-- Included Shipping Methods Blade File -->
-                        <template v-if="cart.have_stockable_items && ['shipping', 'payment', 'review'].includes(currentStep)">
-                            @include('shop::checkout.onepage.shipping')
-                        </template>
-
-                        <!-- Included Payment Methods Blade File -->
-                        <template v-if="['payment', 'review'].includes(currentStep)">
-                            @include('shop::checkout.onepage.payment')
-                        </template>
+                            <!-- Included Payment Methods Blade File -->
+                            <template v-if="['payment', 'review'].includes(currentStep)">
+                                @include('shop::checkout.onepage.payment')
+                            </template>
+                        </div>
                     </div>
 
                     <!-- Included Checkout Summary Blade File For Desktop view -->
-                    <div class="sticky top-8 block h-max w-[442px] max-w-full max-lg:w-auto max-lg:max-w-[442px] ltr:pl-8 max-lg:ltr:pl-0 rtl:pr-8 max-lg:rtl:pr-0">
-                        <div class="block max-md:hidden">
+                    <div class="block h-max max-w-full self-start lg:sticky lg:top-8">
+                        <div class="rounded-3xl border border-zinc-200 bg-white p-4 shadow-sm ring-1 ring-zinc-200/60 lg:p-6">
                             @include('shop::checkout.onepage.summary')
-                        </div>
 
-                        <div
-                            class="flex justify-end"
-                            v-if="canPlaceOrder"
-                        >
-                            <template v-if="cart.payment_method == 'paypal_smart_button'">
-                                {!! view_render_event('bagisto.shop.checkout.onepage.summary.paypal_smart_button.before') !!}
+                            <div
+                                class="mt-6 border-t border-zinc-200 pt-4"
+                                v-if="canPlaceOrder"
+                            >
+                                <template v-if="cart.payment_method == 'paypal_smart_button'">
+                                    {!! view_render_event('bagisto.shop.checkout.onepage.summary.paypal_smart_button.before') !!}
 
-                                <!-- Paypal Smart Button Vue Component -->
-                                <v-paypal-smart-button></v-paypal-smart-button>
+                                    <!-- Paypal Smart Button Vue Component -->
+                                    <v-paypal-smart-button></v-paypal-smart-button>
 
-                                {!! view_render_event('bagisto.shop.checkout.onepage.summary.paypal_smart_button.after') !!}
-                            </template>
+                                    {!! view_render_event('bagisto.shop.checkout.onepage.summary.paypal_smart_button.after') !!}
+                                </template>
 
-                            <template v-else>
-                                <x-shop::button
-                                    type="button"
-                                    class="primary-button w-max rounded-2xl bg-navyBlue px-11 py-3 max-md:mb-4 max-md:w-full max-md:max-w-full max-md:rounded-lg max-sm:py-1.5"
-                                    ::title="isQuoteMode ? '{{ lagmedical_checkout_button_label() }}' : '{{ trans('shop::app.checkout.onepage.summary.place-order') }}'"
-                                    ::disabled="isPlacingOrder"
-                                    ::loading="isPlacingOrder"
-                                    @click="placeOrder"
-                                />
-                            </template>
+                                <template v-else>
+                                    <x-shop::button
+                                        type="button"
+                                        class="primary-button w-full rounded-2xl bg-navyBlue px-11 py-3 text-base font-medium max-sm:py-2"
+                                        ::title="isQuoteMode ? '{{ lagmedical_checkout_button_label() }}' : '{{ trans('shop::app.checkout.onepage.summary.place-order') }}'"
+                                        ::disabled="isPlacingOrder"
+                                        ::loading="isPlacingOrder"
+                                        @click="placeOrder"
+                                    />
+                                </template>
+                            </div>
                         </div>
                     </div>
                 </div>
