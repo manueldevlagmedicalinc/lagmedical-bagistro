@@ -49,6 +49,7 @@ class ProductResource extends JsonResource
             'min_price' => core()->formatPrice($productTypeInstance->getMinimalPrice()),
             'prices' => $productTypeInstance->getProductPrices(),
             'price_html' => $productTypeInstance->getPriceHtml(),
+            'is_quote_mode' => lagmedical_is_quote_mode(),
             'ratings' => [
                 'average' => $this->reviewHelper->getAverageRating($this),
                 'total' => $this->reviewHelper->getTotalRating($this),
