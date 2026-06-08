@@ -46,5 +46,11 @@ return [
         ],
     ],
 
+    'equipment_brand_filters' => [
+        'brand_attribute_code' => 'medical_brand',
+        'equipment_brands_root_id' => 28,
+        'medical_equipment_root_id' => 2,
+    ],
+
     'copyright' => '© Copyright 2010 - :year, Lag Medical. All rights reserved.',
 ];
