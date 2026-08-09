@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y \
     default-mysql-client nodejs npm \
     && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp --with-avif \
     && docker-php-ext-install \
-        pdo pdo_mysql mbstring zip exif pcntl bcmath gd intl xsl soap opcache \
+        pdo pdo_mysql mbstring zip exif pcntl bcmath calendar gd intl xsl soap opcache \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

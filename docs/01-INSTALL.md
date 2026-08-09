@@ -10,6 +10,71 @@
 
 ---
 
+## Install Docker On Ubuntu Or WSL2
+
+Install required packages:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y ca-certificates curl gnupg git unzip
+```
+
+Add Docker official GPG key:
+
+```bash
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+```
+
+Add Docker APT repository:
+
+```bash
+. /etc/os-release
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu ${VERSION_CODENAME} stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+```
+
+Install Docker Engine and Compose plugin:
+
+```bash
+sudo apt-get update
+sudo apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+```
+
+Start Docker:
+
+```bash
+sudo service docker start
+```
+
+Allow the current user to run Docker without `sudo`:
+
+```bash
+sudo usermod -aG docker "$USER"
+```
+
+Apply the new Docker group in the current shell:
+
+```bash
+newgrp docker
+```
+
+Validate Docker:
+
+```bash
+docker --version
+docker compose version
+docker run --rm hello-world
+```
+
+If using WSL2, Docker must be started again after restarting WSL:
+
+```bash
+sudo service docker start
+```
+
+---
+
 ## Build From Zero In Test Environment
 
 ### GitHub SSH Key
@@ -117,6 +182,18 @@ Build and start the full stack:
 ./lagctl build
 ```
 
+Install PHP dependencies with Composer:
+
+```bash
+./lagctl composer install
+```
+
+For production installs, use:
+
+```bash
+./lagctl composer install --no-dev --optimize-autoloader
+```
+
 Restore database and assets:
 
 ```bash
@@ -168,6 +245,12 @@ Nginx Proxy Manager backend target:
 
 ```text
 http://lagmedical_nginx:80
+```
+
+Proxy Host and SSL setup:
+
+```text
+docs/10-NGINX-PROXY-MANAGER.md
 ```
 
 ---

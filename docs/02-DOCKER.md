@@ -17,6 +17,8 @@ Infrastructure
 
 Nginx Proxy Manager owns public hosts and SSL certificates.
 
+See `docs/10-NGINX-PROXY-MANAGER.md` for Proxy Host and SSL setup.
+
 Docker commands
 
 ```bash

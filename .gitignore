@@ -63,4 +63,7 @@ yarn-error.log
 /docker/infra/npm/data/
 /docker/infra/npm/letsencrypt/
 /docker/infra/npm/data/logs/
+/docker/infra/npm/local-certs/
+/docker/npm/data/
+/docker/npm/letsencrypt/
 /docker/npm/data/logs/

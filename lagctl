@@ -84,6 +84,10 @@ ensure_docker() {
   docker info >/dev/null 2>&1 || sudo service docker start || true
 }
 
+ensure_git_safe_directory() {
+  docker exec "$WEB" git config --global --add safe.directory /var/www/html >/dev/null 2>&1 || true
+}
+
 import_database_backup() {
   local file="$1"
 
@@ -178,17 +182,19 @@ case "$1" in
 
   artisan)
     shift
-    docker exec -it "$WEB" php83 artisan "$@"
+    ensure_git_safe_directory
+    docker exec "$WEB" php83 artisan "$@"
     ;;
 
   composer)
     shift
-    docker exec -it "$WEB" composer "$@"
+    ensure_git_safe_directory
+    docker exec "$WEB" composer "$@"
     ;;
 
   npm)
     shift
-    docker exec -it "$WEB" npm "$@"
+    docker exec "$WEB" npm "$@"
     ;;
 
   db:import)
