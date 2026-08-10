@@ -179,6 +179,8 @@ database/backups/local/assets.tar.gz
 Build and start the full stack:
 
 ```bash
+cd /var/www/lagmedicalinc/bagistro
+chmod +x lagctl
 ./lagctl build
 ```
 
