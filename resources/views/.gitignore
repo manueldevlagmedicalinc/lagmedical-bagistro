@@ -13,3 +13,14 @@ vendor/shop/emails/orders/*
 vendor/shop/emails/orders/partials/*
 !vendor/shop/emails/orders/partials/defaultPrice.blade.php
 !vendor/shop/emails/orders/partials/hiddenPrice.blade.php
+!admin/
+admin/*
+!admin/backups/
+admin/backups/*
+!admin/backups/dashboard-summary.blade.php
+!admin/backups/index.blade.php
+!emails/
+emails/*
+!emails/backups/
+emails/backups/*
+!emails/backups/failed.blade.php
