@@ -51,6 +51,8 @@ package-lock.json
 skills-lock.json
 /storage/*.key
 /storage/dcc-data/
+/storage/app/private/lagmedical-backups/
+/storage/app/private/rclone/
 /test-results
 /vendor
 yarn.lock

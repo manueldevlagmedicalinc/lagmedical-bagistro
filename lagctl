@@ -197,6 +197,38 @@ case "$1" in
     docker exec "$WEB" npm "$@"
     ;;
 
+  backup:test)
+    ensure_git_safe_directory
+    docker exec "$WEB" php83 artisan lagmedical:backup-daily --skip-upload
+    ;;
+
+  backup:run)
+    ensure_git_safe_directory
+    docker exec "$WEB" php83 artisan lagmedical:backup-daily
+    ;;
+
+  backup:rclone-config)
+    docker exec -it "$WEB" bash -lc 'mkdir -p storage/app/private/rclone && RCLONE_CONFIG=storage/app/private/rclone/rclone.conf rclone config'
+    ;;
+
+  backup:logs)
+    docker exec "$WEB" php83 artisan tinker --execute="App\\Models\\BackupLog::latest('started_at')->limit(10)->get(['started_at', 'status', 'size_bytes', 'remote_path', 'remote_url', 'message'])->each(fn (\$log) => dump(\$log->toArray()));"
+    ;;
+
+  queue:work)
+    docker exec "$WEB" php83 artisan queue:work database --queue=backups,default --sleep=3 --tries=1 --timeout=3600
+    ;;
+
+  queue:restart)
+    docker exec "$WEB" php83 artisan queue:restart
+    ;;
+
+  mail:test)
+    shift
+    RECIPIENT="${1:-manuel@lagmedicalinc.com}"
+    docker exec "$WEB" php83 artisan lagmedical:mail-test "$RECIPIENT"
+    ;;
+
   db:import)
     FILE="${2:-$BACKUP_FILE}"
 
@@ -404,6 +436,15 @@ case "$1" in
     echo "  ./lagctl npm run build"
     echo "  ./lagctl repair"
     echo "  ./lagctl doctor"
+    echo ""
+    echo "Backups:"
+    echo "  ./lagctl backup:rclone-config"
+    echo "  ./lagctl backup:test"
+    echo "  ./lagctl backup:run"
+    echo "  ./lagctl backup:logs"
+    echo "  ./lagctl queue:work"
+    echo "  ./lagctl queue:restart"
+    echo "  ./lagctl mail:test [email]"
     echo ""
     echo "Database:"
     echo "  ./lagctl db:shell"

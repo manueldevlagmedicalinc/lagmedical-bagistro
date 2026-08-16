@@ -70,5 +70,7 @@ volumes:
 networks:
   lagmedical:
     driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1400
   lagmedical_proxy:
     external: true

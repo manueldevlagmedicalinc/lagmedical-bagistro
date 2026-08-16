@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use Barryvdh\Debugbar\Facades\Debugbar;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\ParallelTesting;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
+use Webkul\Theme\ViewRenderEventManager;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -37,8 +39,40 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->registerLagmedicalAdminMenu();
+        $this->registerLagmedicalDashboardCards();
+
         ParallelTesting::setUpTestDatabase(function (string $database, int $token) {
             Artisan::call('db:seed');
+        });
+    }
+
+    private function registerLagmedicalAdminMenu(): void
+    {
+        config()->set('menu.admin', array_merge(config('menu.admin', []), [
+            [
+                'key' => 'settings.backups',
+                'name' => 'Backups',
+                'route' => 'admin.settings.backups.index',
+                'sort' => 11,
+                'icon' => '',
+            ],
+        ]));
+
+        config()->set('acl', array_merge(config('acl', []), [
+            [
+                'key' => 'settings.backups',
+                'name' => 'Backups',
+                'route' => 'admin.settings.backups.index',
+                'sort' => 11,
+            ],
+        ]));
+    }
+
+    private function registerLagmedicalDashboardCards(): void
+    {
+        Event::listen('bagisto.admin.dashboard.stock_threshold.after', static function (ViewRenderEventManager $viewRenderEventManager) {
+            $viewRenderEventManager->addTemplate('admin.backups.dashboard-summary');
         });
     }
 }

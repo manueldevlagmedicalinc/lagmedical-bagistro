@@ -67,3 +67,21 @@ Utilities
 
 ./lagctl doctor
 ```
+
+Backups
+
+```bash
+./lagctl backup:rclone-config
+
+./lagctl backup:test
+
+./lagctl backup:run
+
+./lagctl backup:logs
+
+./lagctl queue:work
+
+./lagctl queue:restart
+
+./lagctl mail:test manuel@lagmedicalinc.com
+```
