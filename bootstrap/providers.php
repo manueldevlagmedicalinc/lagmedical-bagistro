@@ -1,6 +1,7 @@
 <?php
 
 use App\Providers\AppServiceProvider;
+use LagMedical\ChannelCategory\Providers\ChannelCategoryServiceProvider;
 use Webkul\Admin\Providers\AdminServiceProvider;
 use Webkul\Attribute\Providers\AttributeServiceProvider;
 use Webkul\BookingProduct\Providers\BookingProductServiceProvider;
@@ -46,6 +47,7 @@ return [
      * Application service providers.
      */
     AppServiceProvider::class,
+    ChannelCategoryServiceProvider::class,
 
     /**
      * Webkul's service providers.
