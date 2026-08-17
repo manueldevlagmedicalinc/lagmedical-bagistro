@@ -5,6 +5,7 @@ return [
 
     'quote_mode_channels' => [
         'default',
+        'studiolightai'
     ],
 
     'quote_mode' => [
