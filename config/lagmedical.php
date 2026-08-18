@@ -5,7 +5,7 @@ return [
 
     'quote_mode_channels' => [
         'default',
-        'studiolightai'
+        'studiolightai',
     ],
 
     'quote_mode' => [
@@ -51,6 +51,13 @@ return [
         'brand_attribute_code' => 'medical_brand',
         'equipment_brands_root_id' => 28,
         'medical_equipment_root_id' => 2,
+    ],
+
+    'asset_source_hosts' => [
+        'lagmedicalinc.com',
+        'lagmedicalinc.test',
+        'www.lagmedicalinc.com',
+        'dev.lagmedicalinc.com',
     ],
 
     'copyright' => '© Copyright 2010 - :year, Lag Medical. All rights reserved.',

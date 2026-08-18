@@ -9,6 +9,7 @@ use LagMedical\ChannelCategory\DataGrids\Admin\CategoryDataGrid as ChannelAwareC
 use LagMedical\ChannelCategory\Http\Controllers\Shop\API\CategoryController as ChannelAwareApiCategoryController;
 use LagMedical\ChannelCategory\Http\Controllers\Shop\HomeController as ChannelAwareHomeController;
 use LagMedical\ChannelCategory\Http\Controllers\Shop\ProductsCategoriesProxyController as ChannelAwareProductsCategoriesProxyController;
+use LagMedical\ChannelCategory\Http\Middleware\UseChannelAssetHost;
 use LagMedical\ChannelCategory\Services\CategoryChannelService;
 use Webkul\Admin\DataGrids\Catalog\CategoryDataGrid as BaseCategoryDataGrid;
 use Webkul\Shop\Http\Controllers\API\CategoryController as BaseApiCategoryController;
@@ -28,6 +29,8 @@ class ChannelCategoryServiceProvider extends ServiceProvider
 
     public function boot(CategoryChannelService $categoryChannelService): void
     {
+        $this->app['router']->pushMiddlewareToGroup('web', UseChannelAssetHost::class);
+
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'lagmedical-channel-category');
         Blade::anonymousComponentPath(__DIR__.'/../Resources/views/components', 'shop');
