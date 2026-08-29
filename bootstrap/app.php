@@ -17,6 +17,9 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    ->withCommands([
+        __DIR__.'/../app/Console/Commands',
+    ])
     ->withMiddleware(function (Middleware $middleware) {
         /**
          * Remove the default Laravel middleware that prevents requests during maintenance mode. There are three
@@ -48,7 +51,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->trustProxies(at: '*');
     })
     ->withSchedule(function (Schedule $schedule) {
-        //
+        $schedule->command('lagmedical:backup-daily')->dailyAt('02:15')->withoutOverlapping();
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //

@@ -602,6 +602,55 @@
         </script>
 
         <script type="module">
+            const patchConfigurableGalleryReload = () => {
+                const component = app._context.components['v-product-configurable-options'];
+
+                if (! component?.methods) {
+                    return false;
+                }
+
+                const originalReloadPrice = component.methods.reloadPrice;
+
+                const shouldSkipMissingPriceMarkup = @json(lagmedical_hide_prices());
+
+                component.methods.reloadPrice = function () {
+                    const hasPriceMarkup = document.querySelector('.price-label')
+                        && document.querySelector('.final-price')
+                        && document.querySelector('.regular-price');
+
+                    if (shouldSkipMissingPriceMarkup && ! hasPriceMarkup) {
+                        this.$emitter.emit(
+                            'configurable-variant-selected-event',
+                            this.childAttributes.length == this.childAttributes.filter(attribute => attribute.selectedValue).length
+                                ? this.possibleOptionVariant
+                                : 0
+                        );
+
+                        return;
+                    }
+
+                    return originalReloadPrice.call(this);
+                };
+
+                component.methods.reloadImages = function () {
+                    let media = [];
+
+                    if (this.possibleOptionVariant) {
+                        (this.config.variant_images[this.possibleOptionVariant] || []).forEach(image => media.push(image));
+
+                        (this.config.variant_videos[this.possibleOptionVariant] || []).forEach(video => media.push(video));
+                    }
+
+                    this.$emitter.emit('configurable-variant-update-images-event', media);
+                };
+
+                return true;
+            };
+
+            if (! patchConfigurableGalleryReload()) {
+                setTimeout(patchConfigurableGalleryReload, 0);
+            }
+
             app.component('v-product', {
                 template: '#v-product-template',
 
@@ -623,9 +672,43 @@
 
                 mounted() {
                     this.checkWishlistStatus();
+
+                    this.$emitter.on('configurable-variant-update-images-event', this.updateVariantGallery);
                 },
 
                 methods: {
+                    updateVariantGallery(media) {
+                        if (! media?.length || ! this.$refs.gallery) {
+                            return;
+                        }
+
+                        let gallery = this.$refs.gallery;
+
+                        gallery.isMediaLoading = true;
+
+                        gallery.activeIndex = 0;
+
+                        gallery.media.images = media.filter(item => item.type !== 'videos');
+
+                        gallery.media.videos = media.filter(item => item.type === 'videos');
+
+                        if (gallery.media.images.length) {
+                            gallery.baseFile.type = 'image';
+
+                            gallery.baseFile.path = gallery.media.images[0].large_image_url;
+
+                            return;
+                        }
+
+                        if (gallery.media.videos.length) {
+                            gallery.baseFile.type = 'video';
+
+                            gallery.baseFile.path = gallery.media.videos[0].video_url;
+
+                            gallery.onMediaLoad();
+                        }
+                    },
+
                     addToCart(params) {
                         const operation = this.is_buy_now ? 'buyNow' : 'addToCart';
 

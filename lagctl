@@ -1,0 +1,461 @@
+#!/bin/bash
+
+env_file_value() {
+  local file="$1"
+  local key="$2"
+  local line=""
+  local value=""
+
+  if [ ! -f "$file" ]; then
+    return 0
+  fi
+
+  while IFS= read -r line || [ -n "$line" ]; do
+    line="${line%$'\r'}"
+
+    case "$line" in
+      "$key"=*)
+        value="${line#*=}"
+        value="${value%${value##*[![:space:]]}}"
+        value="${value#${value%%[![:space:]]*}}"
+        value="${value%\"}"
+        value="${value#\"}"
+        value="${value%\'}"
+        value="${value#\'}"
+        printf '%s' "$value"
+        return 0
+        ;;
+    esac
+  done < "$file"
+}
+
+if [ ! -f ".lagctl.env" ]; then
+  echo "No existe .lagctl.env; usando valores por defecto para lagctl."
+fi
+
+LARAVEL_DB_NAME="$(env_file_value .env DB_DATABASE)"
+LARAVEL_DB_USER="$(env_file_value .env DB_USERNAME)"
+LARAVEL_DB_PASS="$(env_file_value .env DB_PASSWORD)"
+LARAVEL_DB_ROOT_PASS="$(env_file_value .env DB_ROOT_PASSWORD)"
+APP_URL="$(env_file_value .env APP_URL)"
+LAGCTL_WEB_CONTAINER="$(env_file_value .lagctl.env WEB_CONTAINER)"
+LAGCTL_DB_CONTAINER="$(env_file_value .lagctl.env DB_CONTAINER)"
+LAGCTL_BACKUP_FILE="$(env_file_value .lagctl.env BACKUP_FILE)"
+LAGCTL_ASSETS_BACKUP_FILE="$(env_file_value .lagctl.env ASSETS_BACKUP_FILE)"
+LAGCTL_NPM_ADMIN_PORT="$(env_file_value .lagctl.env NPM_ADMIN_PORT)"
+LAGCTL_NPM_ADMIN_URL="$(env_file_value .lagctl.env NPM_ADMIN_URL)"
+
+WEB="${LAGCTL_WEB_CONTAINER:-lagmedical_web}"
+DB="${LAGCTL_DB_CONTAINER:-lagmedical_db}"
+DB_NAME="$LARAVEL_DB_NAME"
+DB_USER="$LARAVEL_DB_USER"
+DB_PASS="$LARAVEL_DB_PASS"
+ROOT_PASS="$LARAVEL_DB_ROOT_PASS"
+BACKUP_FILE="${LAGCTL_BACKUP_FILE:-database/backups/local/database-full.sql}"
+ASSETS_BACKUP_FILE="${LAGCTL_ASSETS_BACKUP_FILE:-database/backups/local/assets.tar.gz}"
+NPM_ADMIN_PORT="${LAGCTL_NPM_ADMIN_PORT:-81}"
+NPM_ADMIN_URL="${LAGCTL_NPM_ADMIN_URL:-http://127.0.0.1:$NPM_ADMIN_PORT}"
+
+if [ -z "$DB_NAME" ] || [ -z "$DB_USER" ] || [ -z "$DB_PASS" ] || [ -z "$ROOT_PASS" ]; then
+  echo "Faltan credenciales DB en .env. Requerido: DB_DATABASE, DB_USERNAME, DB_PASSWORD, DB_ROOT_PASSWORD."
+  exit 1
+fi
+
+show_app_host() {
+  echo ""
+
+  if [ -n "$APP_URL" ]; then
+    echo "Host: $APP_URL"
+  else
+    echo "Host: APP_URL no configurado en .env"
+  fi
+
+  echo "NPM Admin: $NPM_ADMIN_URL"
+  echo "NPM Target: http://lagmedical_nginx:80"
+  echo "PhpMyAdmin dev: docker compose --profile dev up -d phpmyadmin"
+}
+
+infra_up() {
+  docker network inspect lagmedical_proxy >/dev/null 2>&1 || docker network create lagmedical_proxy >/dev/null
+  docker compose --env-file .lagctl.env -p lagmedical_infra -f docker-compose.infra.yml up -d
+}
+
+ensure_docker() {
+  docker info >/dev/null 2>&1 || sudo service docker start || true
+}
+
+ensure_git_safe_directory() {
+  docker exec "$WEB" git config --global --add safe.directory /var/www/html >/dev/null 2>&1 || true
+}
+
+import_database_backup() {
+  local file="$1"
+
+  case "$file" in
+    *.sql.gz|*.gz)
+      gunzip -c "$file" | docker exec -i "$DB" mariadb -u"$DB_USER" -p"$DB_PASS" "$DB_NAME"
+      ;;
+    *)
+      docker exec -i "$DB" mariadb -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" < "$file"
+      ;;
+  esac
+}
+
+restore_assets_backup() {
+  if [ ! -f "$ASSETS_BACKUP_FILE" ]; then
+    echo "No existe backup de assets: $ASSETS_BACKUP_FILE"
+    return 0
+  fi
+
+  echo "Restaurando assets desde: $ASSETS_BACKUP_FILE"
+  tar -xzf "$ASSETS_BACKUP_FILE" -C .
+}
+
+case "$1" in
+  up)
+    ensure_docker
+    infra_up
+    docker compose up -d
+    show_app_host
+    ;;
+
+  down)
+    docker compose down
+    ;;
+
+  build)
+    ensure_docker
+    infra_up
+    docker compose up -d --build
+    show_app_host
+    ;;
+
+  restart)
+    infra_up
+    docker compose restart
+    show_app_host
+    ;;
+
+  npm:up)
+    ensure_docker
+    infra_up
+    show_app_host
+    ;;
+
+  npm:down)
+    docker compose --env-file .lagctl.env -p lagmedical_infra -f docker-compose.infra.yml down
+    ;;
+
+  npm:logs)
+    docker compose --env-file .lagctl.env -p lagmedical_infra -f docker-compose.infra.yml logs -f npm
+    ;;
+
+  phpmyadmin:up)
+    docker compose --profile dev up -d phpmyadmin
+    echo "PhpMyAdmin: http://localhost:8086"
+    ;;
+
+  phpmyadmin:down)
+    docker compose stop phpmyadmin
+    docker compose rm -f phpmyadmin
+    ;;
+
+  ps|status)
+    docker compose ps
+    ;;
+
+  logs)
+    docker compose logs -f
+    ;;
+
+  web|shell)
+    docker exec -it "$WEB" bash
+    ;;
+
+  db|db:shell)
+    docker exec -it "$DB" mariadb -u"$DB_USER" -p"$DB_PASS" "$DB_NAME"
+    ;;
+
+  rootdb)
+    docker exec -it "$DB" mariadb -uroot -p"$ROOT_PASS"
+    ;;
+
+  artisan)
+    shift
+    ensure_git_safe_directory
+    docker exec "$WEB" php83 artisan "$@"
+    ;;
+
+  composer)
+    shift
+    ensure_git_safe_directory
+    docker exec "$WEB" composer "$@"
+    ;;
+
+  npm)
+    shift
+    docker exec "$WEB" npm "$@"
+    ;;
+
+  backup:test)
+    ensure_git_safe_directory
+    docker exec "$WEB" php83 artisan lagmedical:backup-daily --skip-upload
+    ;;
+
+  backup:run)
+    ensure_git_safe_directory
+    docker exec "$WEB" php83 artisan lagmedical:backup-daily
+    ;;
+
+  backup:rclone-config)
+    docker exec -it "$WEB" bash -lc 'mkdir -p storage/app/private/rclone && RCLONE_CONFIG=storage/app/private/rclone/rclone.conf rclone config'
+    ;;
+
+  backup:logs)
+    docker exec "$WEB" php83 artisan tinker --execute="App\\Models\\BackupLog::latest('started_at')->limit(10)->get(['started_at', 'status', 'size_bytes', 'remote_path', 'remote_url', 'message'])->each(fn (\$log) => dump(\$log->toArray()));"
+    ;;
+
+  queue:work)
+    docker exec "$WEB" php83 artisan queue:work database --queue=backups,default --sleep=3 --tries=1 --timeout=3600
+    ;;
+
+  queue:restart)
+    docker exec "$WEB" php83 artisan queue:restart
+    ;;
+
+  mail:test)
+    shift
+    RECIPIENT="${1:-manuel@lagmedicalinc.com}"
+    docker exec "$WEB" php83 artisan lagmedical:mail-test "$RECIPIENT"
+    ;;
+
+  db:import)
+    FILE="${2:-$BACKUP_FILE}"
+
+    if [ ! -f "$FILE" ]; then
+      echo "Backup no encontrado: $FILE"
+      exit 1
+    fi
+
+    echo "Importando base de datos desde: $FILE"
+    import_database_backup "$FILE"
+
+    if [ $? -eq 0 ]; then
+      echo "Base de datos importada correctamente."
+    else
+      echo "Error importando la base de datos."
+      exit 1
+    fi
+    ;;
+
+  db:export)
+    mkdir -p database/backups/exports
+    FILE="database/backups/exports/db-$(date +%Y-%m-%d-%H%M%S).sql"
+
+    echo "Exportando base de datos a: $FILE"
+    docker exec "$DB" mariadb-dump -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" > "$FILE"
+
+    if [ $? -eq 0 ]; then
+      echo "Backup creado: $FILE"
+    else
+      echo "Error creando backup."
+      exit 1
+    fi
+    ;;
+
+  db:reset)
+    echo "Recreando base de datos: $DB_NAME"
+
+    docker exec -i "$DB" mariadb -uroot -p"$ROOT_PASS" -e "
+      DROP DATABASE IF EXISTS $DB_NAME;
+      CREATE DATABASE $DB_NAME CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      GRANT ALL PRIVILEGES ON $DB_NAME.* TO '$DB_USER'@'%';
+      FLUSH PRIVILEGES;
+    "
+
+    echo "Base de datos recreada."
+    ;;
+
+  db:fresh)
+    FILE="${2:-$BACKUP_FILE}"
+
+    if [ ! -f "$FILE" ] && [ -z "$2" ] && [ -f "${BACKUP_FILE}.gz" ]; then
+      FILE="${BACKUP_FILE}.gz"
+    fi
+
+    if [ ! -f "$FILE" ]; then
+      echo "Backup no encontrado: $FILE"
+      exit 1
+    fi
+
+    echo "Deteniendo contenedores..."
+    docker compose down
+
+    echo "Buscando volumen de MariaDB..."
+    VOLUME=$(docker volume ls --format "{{.Name}}" | grep "lagmedical_db_data" | head -n 1)
+
+    if [ -n "$VOLUME" ]; then
+      echo "Eliminando volumen: $VOLUME"
+      docker volume rm "$VOLUME"
+    else
+      echo "No se encontró volumen previo de MariaDB."
+    fi
+
+    echo "Levantando contenedores..."
+    infra_up
+    docker compose up -d
+
+    echo "Esperando MariaDB..."
+    sleep 12
+
+    echo "Importando backup: $FILE"
+    import_database_backup "$FILE"
+
+    if [ $? -ne 0 ]; then
+      echo "Error importando backup."
+      exit 1
+    fi
+
+    restore_assets_backup
+
+    if [ $? -ne 0 ]; then
+      echo "Error restaurando assets."
+      exit 1
+    fi
+
+    echo "Limpiando cache Laravel..."
+    docker exec "$WEB" php83 artisan optimize:clear || true
+    docker exec "$WEB" php83 artisan storage:link || true
+
+    echo "Base restaurada correctamente."
+    docker compose ps
+    show_app_host
+    ;;
+
+  db:latest)
+    if [ -f "$BACKUP_FILE" ]; then
+      ls -lh "$BACKUP_FILE"
+    elif [ -f "${BACKUP_FILE}.gz" ]; then
+      ls -lh "${BACKUP_FILE}.gz"
+    else
+      echo "No existe backup estándar: $BACKUP_FILE o ${BACKUP_FILE}.gz"
+    fi
+
+    if [ -f "$ASSETS_BACKUP_FILE" ]; then
+      ls -lh "$ASSETS_BACKUP_FILE"
+    fi
+    ;;
+
+  import-db)
+    FILE="$2"
+
+    if [ -z "$FILE" ]; then
+      echo "Uso: ./lagctl import-db /ruta/backup.sql"
+      exit 1
+    fi
+
+    ./lagctl db:import "$FILE"
+    ;;
+
+  backup-db)
+    ./lagctl db:export
+    ;;
+
+  reset-db)
+    ./lagctl db:reset
+    ;;
+
+  repair)
+    ensure_docker
+    infra_up
+    docker compose up -d
+
+    docker exec "$WEB" bash -c "
+      mkdir -p storage bootstrap/cache
+      chmod -R 775 storage bootstrap/cache || true
+    "
+
+    docker exec "$WEB" php83 artisan optimize:clear || true
+    docker exec "$WEB" php83 artisan storage:link || true
+
+    docker compose ps
+    show_app_host
+    ;;
+
+  doctor)
+    echo "=== Docker ==="
+    docker --version
+    docker compose version
+
+    echo ""
+    echo "=== Containers ==="
+    docker compose ps
+
+    echo ""
+    echo "=== PHP ==="
+    docker exec -it "$WEB" php83 -v || true
+
+    echo ""
+    echo "=== Composer ==="
+    docker exec -it "$WEB" composer --version || true
+
+    echo ""
+    echo "=== MariaDB ==="
+    docker exec -it "$DB" mariadb -u"$DB_USER" -p"$DB_PASS" -e "SELECT VERSION();" "$DB_NAME" || true
+
+    echo ""
+    echo "=== Tables ==="
+    docker exec -it "$DB" mariadb -u"$DB_USER" -p"$DB_PASS" "$DB_NAME" -e "SELECT COUNT(*) AS total_tables FROM information_schema.tables WHERE table_schema='$DB_NAME';" || true
+
+    echo ""
+    echo "=== Laravel ==="
+    docker exec -it "$WEB" php83 artisan --version || true
+    ;;
+
+  *)
+    echo "Lag Medical Docker Manager"
+    echo ""
+    echo "Docker:"
+    echo "  ./lagctl build"
+    echo "  ./lagctl up"
+    echo "  ./lagctl down"
+    echo "  ./lagctl restart"
+    echo "  ./lagctl ps"
+    echo "  ./lagctl logs"
+    echo "  ./lagctl web"
+    echo "  ./lagctl npm:up"
+    echo "  ./lagctl npm:down"
+    echo "  ./lagctl npm:logs"
+    echo "  ./lagctl phpmyadmin:up"
+    echo "  ./lagctl phpmyadmin:down"
+    echo ""
+    echo "Laravel:"
+    echo "  ./lagctl artisan optimize:clear"
+    echo "  ./lagctl composer install"
+    echo "  ./lagctl npm install"
+    echo "  ./lagctl npm run build"
+    echo "  ./lagctl repair"
+    echo "  ./lagctl doctor"
+    echo ""
+    echo "Backups:"
+    echo "  ./lagctl backup:rclone-config"
+    echo "  ./lagctl backup:test"
+    echo "  ./lagctl backup:run"
+    echo "  ./lagctl backup:logs"
+    echo "  ./lagctl queue:work"
+    echo "  ./lagctl queue:restart"
+    echo "  ./lagctl mail:test [email]"
+    echo ""
+    echo "Database:"
+    echo "  ./lagctl db:shell"
+    echo "  ./lagctl db:latest"
+    echo "  ./lagctl db:import"
+    echo "  ./lagctl db:import /ruta/backup.sql"
+    echo "  ./lagctl db:import /ruta/backup.sql.gz"
+    echo "  ./lagctl db:export"
+    echo "  ./lagctl db:reset"
+    echo "  ./lagctl db:fresh"
+    echo "  ./lagctl db:fresh /ruta/backup.sql"
+    echo "  ./lagctl db:fresh /ruta/backup.sql.gz"
+    ;;
+esac

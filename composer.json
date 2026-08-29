@@ -8,7 +8,7 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.3",
+        "php": ">=8.3 <8.5",
         "ext-calendar": "*",
         "ext-curl": "*",
         "ext-intl": "*",
@@ -17,7 +17,6 @@
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-tokenizer": "*",
-        "andreiio/blade-remix-icon": "^3.9",
         "astrotomic/laravel-translatable": "^11.16",
         "barryvdh/laravel-dompdf": "^2.0.0|^3.0",
         "diglactic/laravel-breadcrumbs": "^10.0",
@@ -68,6 +67,7 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
+            "LagMedical\\ChannelCategory\\": "packages/LagMedical/ChannelCategory/src",
             "Webkul\\Admin\\": "packages/Webkul/Admin/src",
             "Webkul\\Attribute\\": "packages/Webkul/Attribute/src",
             "Webkul\\BookingProduct\\": "packages/Webkul/BookingProduct/src",
@@ -81,6 +81,7 @@
             "Webkul\\DataGrid\\": "packages/Webkul/DataGrid/src",
             "Webkul\\DataTransfer\\": "packages/Webkul/DataTransfer/src",
             "Webkul\\DebugBar\\": "packages/Webkul/DebugBar/src",
+            "Webkul\\EUWithdrawal\\": "packages/Webkul/EUWithdrawal/src",
             "Webkul\\FPC\\": "packages/Webkul/FPC/src",
             "Webkul\\GDPR\\": "packages/Webkul/GDPR/src",
             "Webkul\\ImageCache\\": "packages/Webkul/ImageCache/src",
@@ -92,6 +93,7 @@
             "Webkul\\PayU\\": "packages/Webkul/PayU/src",
             "Webkul\\Payment\\": "packages/Webkul/Payment/src",
             "Webkul\\Paypal\\": "packages/Webkul/Paypal/src",
+            "Webkul\\PhonePe\\": "packages/Webkul/PhonePe/src",
             "Webkul\\Product\\": "packages/Webkul/Product/src",
             "Webkul\\RMA\\": "packages/Webkul/RMA/src",
             "Webkul\\Razorpay\\": "packages/Webkul/Razorpay/src",
@@ -115,6 +117,7 @@
             "Webkul\\Core\\Tests\\": "packages/Webkul/Core/tests",
             "Webkul\\Customer\\Tests\\": "packages/Webkul/Customer/tests",
             "Webkul\\DataGrid\\Tests\\": "packages/Webkul/DataGrid/tests",
+            "Webkul\\EUWithdrawal\\Tests\\": "packages/Webkul/EUWithdrawal/tests",
             "Webkul\\Installer\\Tests\\": "packages/Webkul/Installer/tests",
             "Webkul\\Payment\\Tests\\": "packages/Webkul/Payment/tests",
             "Webkul\\PayU\\Tests\\": "packages/Webkul/PayU/tests",
@@ -157,7 +160,7 @@
             "php-http/discovery": true
         }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "support": {
         "issues": "https://github.com/bagisto/bagisto/issues",

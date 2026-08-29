@@ -5,6 +5,7 @@ return [
 
     'quote_mode_channels' => [
         'default',
+        'studiolightai',
     ],
 
     'quote_mode' => [
@@ -44,6 +45,26 @@ return [
             'es' => 'Hola Lag Medical, necesito este producto: :product_name. Lo vi en este link: :product_url',
             'pt_BR' => 'Ola Lag Medical, preciso deste produto: :product_name. Eu vi neste link: :product_url',
         ],
+    ],
+
+    'equipment_brand_filters' => [
+        'brand_attribute_code' => 'medical_brand',
+        'equipment_brands_root_id' => 28,
+        'medical_equipment_root_id' => 2,
+    ],
+
+    'asset_source_hosts' => [
+        'lagmedicalinc.com',
+        'lagmedicalinc.test',
+        'www.lagmedicalinc.com',
+        'dev.lagmedicalinc.com',
+    ],
+
+    'session_cookie_source_names' => [
+        'lagmedicalinc_session',
+        'lagmedicalinc_com_session',
+        'lagmedicalinc_test_session',
+        'lagmedicalinctest_session',
     ],
 
     'copyright' => '© Copyright 2010 - :year, Lag Medical. All rights reserved.',

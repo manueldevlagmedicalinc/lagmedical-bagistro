@@ -18,6 +18,19 @@
 /agents/
 agents/
 boost.json
+/database/backups/local/*.sql
+/database/backups/local/*.gz
+/database/backups/**/*.sql
+/database/backups/**/*.gz
+/database/backups/**/*.tar
+/database/backups/**/*.tgz
+/database/backups/**/*.tar.gz
+/database/backups/*.sql
+/database/backups/*.gz
+/database/backups/*.tar
+/database/backups/*.tgz
+/database/backups/*.tar.gz
+
 /stubs
 /data
 /docker-compose-collection
@@ -38,7 +51,21 @@ package-lock.json
 skills-lock.json
 /storage/*.key
 /storage/dcc-data/
+/storage/app/private/lagmedical-backups/
+/storage/app/private/rclone/
 /test-results
 /vendor
 yarn.lock
 yarn-error.log
+
+# Local LagCTL credentials
+.lagctl.env
+
+# Local Nginx Proxy Manager runtime data and certificates
+/docker/infra/npm/data/
+/docker/infra/npm/letsencrypt/
+/docker/infra/npm/data/logs/
+/docker/infra/npm/local-certs/
+/docker/npm/data/
+/docker/npm/letsencrypt/
+/docker/npm/data/logs/

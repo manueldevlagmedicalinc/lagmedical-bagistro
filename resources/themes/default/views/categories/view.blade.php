@@ -1,3 +1,7 @@
+@php
+    $brandContext = lagmedical_equipment_brand_filter_context($category);
+@endphp
+
 <!-- SEO Meta Content -->
 @push('meta')
     <meta
@@ -233,13 +237,20 @@
 
                 computed: {
                     queryParams() {
-                        let queryParams = Object.assign({}, this.filters.filter, this.filters.toolbar.applied);
+                        let queryParams = Object.assign({}, this.filters.filter, this.filters.toolbar.applied, this.fixedBrandFilters());
 
                         return this.removeJsonEmptyValues(queryParams);
                     },
 
                     queryString() {
-                        return this.jsonToQueryString(this.queryParams);
+                        let queryParams = Object.assign({}, this.filters.filter, this.filters.toolbar.applied);
+                        const brandContext = @json($brandContext);
+
+                        if (brandContext.active) {
+                            delete queryParams[brandContext.brand_attribute_code];
+                        }
+
+                        return this.jsonToQueryString(this.removeJsonEmptyValues(queryParams));
                     },
                 },
 
@@ -258,6 +269,18 @@
                         this.filters[type] = filters;
                     },
 
+                    fixedBrandFilters() {
+                        const brandContext = @json($brandContext);
+
+                        if (! brandContext.active) {
+                            return {};
+                        }
+
+                        return {
+                            [brandContext.brand_attribute_code]: brandContext.brand_option_id,
+                        };
+                    },
+
                     clearFilters(type, filters) {
                         this.filters[type] = {};
                     },
@@ -273,7 +296,7 @@
 
                         this.isLoading = true;
 
-                        this.$axios.get("{{ route('shop.api.products.index', ['category_id' => $category->id]) }}", {
+                        this.$axios.get("{{ $brandContext['active'] ? route('shop.api.products.index') : route('shop.api.products.index', ['category_id' => $category->id]) }}", {
                             params: this.queryParams
                         })
                             .then(response => {

@@ -4,6 +4,7 @@
 <div v-if="! isMobile">
     <!-- Filters Vue Component -->
     <v-filters
+        :brand-context='@json($brandContext ?? ['active' => false])'
         @filter-applied="setFilters('filter', $event)"
         @filter-clear="clearFilters('filter', $event)"
     >
@@ -55,6 +56,7 @@
         <x-slot:content>
             <!-- Filters Vue Component -->
             <v-filters
+                :brand-context='@json($brandContext ?? ['active' => false])'
                 @filter-applied="setFilters('filter', $event)"
                 @filter-clear="clearFilters('filter', $event)"
             >
@@ -341,6 +343,13 @@
         app.component('v-filters', {
             template: '#v-filters-template',
 
+            props: {
+                brandContext: {
+                    type: Object,
+                    default: () => ({ active: false }),
+                },
+            },
+
             data() {
                 return {
                     isLoading: true,
@@ -361,11 +370,30 @@
                         return this.filters.available;
                     }
 
-                    if (! this.isPriceHidden) {
-                        return this.filters.available;
+                    let filters = this.filters.available;
+
+                    if (this.brandContext.active) {
+                        filters = filters.filter((filter) => filter.code !== this.brandContext.brand_attribute_code);
+
+                        if (this.brandContext.available_categories?.length) {
+                            filters = [
+                                {
+                                    id: 'lagmedical_category',
+                                    code: 'category_id',
+                                    name: 'Category',
+                                    type: 'checkbox',
+                                    options: this.brandContext.available_categories,
+                                },
+                                ...filters,
+                            ];
+                        }
                     }
 
-                    return this.filters.available.filter((filter) => filter.type !== 'price');
+                    if (! this.isPriceHidden) {
+                        return filters;
+                    }
+
+                    return filters.filter((filter) => filter.type !== 'price');
                 },
             },
 
@@ -401,6 +429,10 @@
                          */
                         if (! ['sort', 'limit', 'mode'].includes(filter)) {
                             if (this.isPriceHidden && filter === 'price') {
+                                return;
+                            }
+
+                            if (this.brandContext.active && filter === this.brandContext.brand_attribute_code) {
                                 return;
                             }
 
@@ -536,6 +568,23 @@
                 },
 
                 fetchFilterOptions(replace = true) {
+                    if (this.filter.options) {
+                        const searchQuery = this.searchQuery.toLowerCase();
+                        const options = searchQuery
+                            ? this.filter.options.filter((option) => option.name.toLowerCase().includes(searchQuery))
+                            : this.filter.options;
+
+                        this.isLoadingMore = false;
+                        this.options = options;
+                        this.meta = {
+                            total: options.length,
+                            current_page: 1,
+                            last_page: 1,
+                        };
+
+                        return;
+                    }
+
                     this.isLoadingMore = true;
 
                     const url = `{{ route("shop.api.categories.attribute_options", 'attribute_id') }}`.replace('attribute_id', this.filter.id);
