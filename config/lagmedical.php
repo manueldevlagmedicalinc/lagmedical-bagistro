@@ -60,5 +60,12 @@ return [
         'dev.lagmedicalinc.com',
     ],
 
+    'session_cookie_source_names' => [
+        'lagmedicalinc_session',
+        'lagmedicalinc_com_session',
+        'lagmedicalinc_test_session',
+        'lagmedicalinctest_session',
+    ],
+
     'copyright' => '© Copyright 2010 - :year, Lag Medical. All rights reserved.',
 ];

@@ -29,7 +29,7 @@ class ChannelCategoryServiceProvider extends ServiceProvider
 
     public function boot(CategoryChannelService $categoryChannelService): void
     {
-        $this->app['router']->pushMiddlewareToGroup('web', UseChannelAssetHost::class);
+        $this->app['router']->prependMiddlewareToGroup('web', UseChannelAssetHost::class);
 
         $this->loadMigrationsFrom(__DIR__.'/../Database/Migrations');
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'lagmedical-channel-category');
