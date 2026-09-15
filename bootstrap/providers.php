@@ -2,6 +2,7 @@
 
 use App\Providers\AppServiceProvider;
 use LagMedical\ChannelCategory\Providers\ChannelCategoryServiceProvider;
+use LagMedical\CmsPro\Providers\CmsProServiceProvider;
 use Webkul\Admin\Providers\AdminServiceProvider;
 use Webkul\Attribute\Providers\AttributeServiceProvider;
 use Webkul\BookingProduct\Providers\BookingProductServiceProvider;
@@ -91,4 +92,5 @@ return [
     TaxServiceProvider::class,
     ThemeServiceProvider::class,
     UserServiceProvider::class,
+    CmsProServiceProvider::class,
 ];
