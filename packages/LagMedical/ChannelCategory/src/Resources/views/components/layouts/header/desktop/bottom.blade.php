@@ -44,6 +44,15 @@
             </div>
         </v-desktop-category>
 
+        <div class="flex items-center gap-5 max-[1180px]:gap-3">
+            <a
+                href="{{ route('campaign.frames.index') }}"
+                class="border-b-4 border-transparent px-2 py-7 text-sm uppercase hover:border-navyBlue"
+            >
+                Frames &amp; Eyewear
+            </a>
+        </div>
+
         {!! view_render_event('bagisto.shop.components.layouts.header.desktop.bottom.category.after') !!}
     </div>
 

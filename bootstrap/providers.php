@@ -2,6 +2,8 @@
 
 use App\Providers\AppServiceProvider;
 use LagMedical\ChannelCategory\Providers\ChannelCategoryServiceProvider;
+use LagMedical\Eblast\Providers\EblastServiceProvider;
+use LagMedical\Eyewear\Providers\EyewearServiceProvider;
 use Webkul\Admin\Providers\AdminServiceProvider;
 use Webkul\Attribute\Providers\AttributeServiceProvider;
 use Webkul\BookingProduct\Providers\BookingProductServiceProvider;
@@ -48,6 +50,8 @@ return [
      */
     AppServiceProvider::class,
     ChannelCategoryServiceProvider::class,
+    EblastServiceProvider::class,
+    EyewearServiceProvider::class,
 
     /**
      * Webkul's service providers.

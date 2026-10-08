@@ -1,0 +1,65 @@
+.lf-hero>video{display:block;width:100%;height:100%;object-fit:cover;object-position:center 42%}
+.lf-form-message[data-state="error"]{color:#a51d2d}
+.lf-form-message[data-state="success"]{color:#12643b}
+.lf-button:disabled{cursor:wait;opacity:.68;transform:none}
+@media(max-width:900px){.lf-hero>video{object-position:60% center}}
+@media(max-width:600px){.lf-hero>video{object-position:64% center}}
+.lf-logo-image{display:block;height:auto;max-height:48px;max-width:180px;object-fit:contain;width:auto}
+@media(max-width:600px){.lf-logo-image{max-height:38px;max-width:145px}}
+.lf-intro h1{font-size:clamp(52px,7vw,116px)}
+.lf-brand-panel--komiko{background:#ffffff;color:#111111;border-top:6px solid #d65a26}
+.lf-brand-panel--komiko p{color:#30343b}
+.lf-brand-panel--komiko .lf-eyebrow{color:#34383f}
+.lf-brand-panel--komiko h2{color:#111111}
+.lf-brand-panel--komiko .lf-komiko span{color:#252525}
+@media(max-width:600px){.lf-intro h1{font-size:clamp(42px,11vw,64px)}}
+.lf-brand-panels{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);margin-top:48px}
+.lf-brand-panel{background:var(--paper);padding:clamp(30px,5vw,78px);min-height:560px}
+.lf-brand-panel h2{font-size:clamp(42px,5vw,76px);margin:50px 0 24px}
+.lf-brand-panel p{max-width:390px;color:#30343b}
+.lf-brand-panel--komiko{background:#ffffff;color:#111111}
+.lf-brand-panel--komiko p{color:#30343b}
+.lf-brand-panel--komiko .lf-eyebrow{color:#34383f}
+.lf-brand-panel--komiko .lf-komiko{color:var(--lagmedical-white);display:inline-flex;margin-top:52px}
+.lf-brand-panel--marchon .lf-marchon{display:inline-flex;margin-top:52px}
+.lf-brand-panel--marchon .lf-brand-row{margin-top:48px}
+.lf-brand-panel--marchon .lf-all-brands{margin-top:34px}
+.lf-brand-carousel{border-bottom:1px solid var(--line);border-top:1px solid var(--line);margin-top:48px;overflow:hidden;padding:26px 0}
+.lf-brand-carousel__track{align-items:center;animation:lf-brand-carousel 42s linear infinite;display:flex;width:max-content}
+.lf-brand-carousel__track span{font-family:'DM Sans',Arial,sans-serif;font-size:clamp(18px,2vw,28px);font-weight:500;padding:0 34px;white-space:nowrap}
+.lf-brand-carousel:hover .lf-brand-carousel__track{animation-play-state:paused}
+@keyframes lf-brand-carousel{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.lf-brand-carousel__track{animation:none}}
+.lf-brand-section-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(320px,42%);gap:1px;background:var(--line);margin-top:48px}
+.lf-brand-section-grid .lf-brand-panel{min-height:620px}
+.lf-brand-image{min-height:620px;overflow:hidden;background:var(--lagmedical-light-2)}
+.lf-brand-image img{display:block;height:100%;object-fit:cover;width:100%}
+.lf-brand-panel .lf-komiko{align-items:flex-start;display:flex;flex-direction:column!important;gap:0;line-height:.8;margin-top:52px}
+.lf-brand-panel .lf-komiko span{display:block;font-size:12px;letter-spacing:.32em;line-height:1;margin-left:4px;margin-top:12px}
+.lf-komiko-logo{display:block;height:auto;max-width:min(100%,520px);object-fit:contain;width:100%}
+.lf-brand-panel--komiko .lf-komiko span{color:#252525;font-size:12px;letter-spacing:.42em;margin-left:5px;margin-top:14px}
+.lf-brand-panel--marchon .lf-marchon{align-items:flex-start;display:flex;flex-direction:column!important;font-size:clamp(64px,8vw,136px);gap:0;line-height:.8;margin-top:52px}
+.lf-brand-panel--marchon .lf-marchon span{display:block;font-size:12px;letter-spacing:.38em;line-height:1;margin-left:6px;margin-top:16px}
+.lf-brand-panel--marchon h2{font-size:clamp(44px,5.5vw,88px);max-width:1000px}
+@media(max-width:900px){.lf-brand-panels{grid-template-columns:1fr}.lf-brand-panel{min-height:0}.lf-brand-panel h2{margin-top:36px}}
+@media(max-width:900px){.lf-brand-section-grid{grid-template-columns:1fr}.lf-brand-section-grid .lf-brand-panel,.lf-brand-image{min-height:0}.lf-brand-image{aspect-ratio:1}}
+@media(max-width:600px){.lf-brand-carousel{overflow-x:auto}.lf-brand-carousel__track{animation:none}.lf-brand-carousel__track span{font-size:18px;padding:0 22px}}
+@media(max-width:600px){.lf-brand-panel{padding:38px 6%}.lf-brand-panel--komiko .lf-komiko,.lf-brand-panel--marchon .lf-marchon{margin-top:38px}.lf-komiko-logo{max-width:100%}.lf-brand-panel--marchon .lf-marchon{font-size:58px}.lf-brand-panel h2{font-size:48px}.lf-brand-panel--marchon h2{font-size:42px}}
+.lf-header{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)}
+.lf-header .lf-logo{justify-self:start}
+.lf-header .lf-header-note{justify-self:center;text-align:center}
+.lf-header .lf-small-cta{justify-self:end}
+.lf-intro{text-align:center}
+.lf-intro .lf-eyebrow,.lf-intro h1{margin-left:auto;margin-right:auto}
+.lf-intro-bottom{display:grid;grid-template-columns:1fr;gap:18px;justify-items:center;text-align:center}
+.lf-intro-bottom p{max-width:520px}
+.lf-brand-carousel__track{animation-duration:90s}
+.lf-spinner{display:inline-block;width:16px;height:16px;margin-right:10px;border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:lf-spinner .7s linear infinite;vertical-align:-3px}
+@keyframes lf-spinner{to{transform:rotate(360deg)}}
+.lf-button[aria-busy="true"]{cursor:wait;opacity:.78}
+.lf-modal[open]{animation:lf-dialog-in .24s ease-out both}
+.lf-modal[open]::backdrop{animation:lf-backdrop-in .24s ease-out both;background:rgb(6 17 38 / 68%)}
+@keyframes lf-dialog-in{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes lf-backdrop-in{from{opacity:0}to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.lf-modal[open],.lf-modal[open]::backdrop{animation:none}}
+@media(max-width:600px){.lf-intro-bottom{justify-items:center}.lf-intro-bottom p{max-width:330px;text-align:center}}
