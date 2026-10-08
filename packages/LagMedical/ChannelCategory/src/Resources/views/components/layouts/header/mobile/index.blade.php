@@ -294,14 +294,16 @@
 
                     {!! view_render_event('bagisto.shop.components.layouts.header.mobile.drawer.categories.before') !!}
 
-                    <div class="grid gap-1 border-b border-zinc-200 px-6 py-4">
-                        <a
-                            href="{{ route('campaign.frames.index') }}"
-                            class="py-2 text-base font-medium text-black"
-                        >
-                            Frames &amp; Eyewear
-                        </a>
-                    </div>
+                    @if (config('lagmedical.enabled') && Route::has('campaign.frames.index'))
+                        <div class="grid gap-1 border-b border-zinc-200 px-6 py-4">
+                            <a
+                                href="{{ route('campaign.frames.index') }}"
+                                class="py-2 text-base font-medium text-black"
+                            >
+                                Frames &amp; Eyewear
+                            </a>
+                        </div>
+                    @endif
 
                     <!-- Mobile category view -->
                     <v-mobile-category ref="mobileCategory"></v-mobile-category>
